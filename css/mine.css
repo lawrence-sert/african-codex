@@ -1,0 +1,75 @@
+.code-font {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+.script-font {
+  font-family: font-family: 'Montserrat', sans-serif;
+}
+
+.chalkboard {
+	height: 600px;
+}
+
+.tabbie-content {
+	height: 470px;
+}
+
+.tabbie-content-top {
+	height: 420px;
+}
+.tabbie-content-bottom {
+	height: 30px;
+	border-top: 1px dashed #ccc;
+	padding: 10px;
+}
+
+.scrollStyle
+{
+    max-height: 650px;
+    overflow-y: scroll;
+}
+
+.pagesList {
+	height: 120px;
+}
+
+.pageTitle {
+	font-size : 18px;
+}
+
+.profile-user-img {
+  border: 1px solid #adb5bd;
+  margin: 0 auto;
+  padding: 3px;
+  width: 100px;
+}
+
+.profile-username {
+  font-size: 21px;
+  margin-top: 5px;
+}
+
+.img-circle {
+  border-radius: 50%;
+}
+
+a {
+	color: #242424;
+  transition-duration: 200ms;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.7, 1, 0.7, 1);
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+	color: #FEC329;
+  transition-duration: 200ms;
+  transition-property: all;
+  transition-timing-function: cubic-bezier(0.7, 1, 0.7, 1);
+  text-decoration: none;
+}
+
+.language-tab {
+	border-top : 1px dashed #ccc;
+}
+

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Word Widget</title>
+  <!-- // addition of bootstrap --> 
+  <link rel="stylesheet" href="css/bootstrap.css">
+  <style>
+        .lightext {
+            background-color: #F1F579;
+            padding:5px 5px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+  <section class="jumbotron ">
+    <div class="container">
+
+      <h1 class="jumbotron-heading mb-4 text-center">Word Widget</h1>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card" style="width: 100%;">
+            <div class="card-body">
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-3">
+                    <label for="exampleFormControlTextarea1" class="form-label"><strong>Type Your Text Here</strong></label>
+                    <textarea onkeyup="countWords(this);" class="form-control" id="words" rows="4"></textarea>
+                    <small><span id="words-counter"></span></small>
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                  <button type="button" class="btn btn-block btn-primary" onclick="highlightWords()">Analyze Text</button>
+                </div>
+                <div class="col-md-6 col-sm-6 col-xs-6">
+                  <button type="button" class="btn btn-block btn-success" onclick="refreshPage()">Reload Page</button>
+                </div>
+              </div>
+
+              <div class="row mt-4">
+                <div class="col-md-12 col-sm-12 col-xs-12">
+                  <span id="demo"></span>
+                </div>
+              </div>
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+  </section>
+</body>
+<script src="js/word-widget.js"></script>
+</html>
+
+

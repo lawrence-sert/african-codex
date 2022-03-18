@@ -1,0 +1,9 @@
+Hi I'm okay.
+
+You can test the new fruits added "test if the new fruit names correspond with their emojis"
+
+You can also test the search support "eg if users search a fruit the function should allow them to search a fruit"
+
+Plus if they search a fruit name that's not there the function should return that "fruit not found" or give them an option to add a new fruit
+
+Can test the ascending and descending order functions

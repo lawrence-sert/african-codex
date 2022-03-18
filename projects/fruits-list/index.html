@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fruits List</title>
+  <!-- // addition of bootstrap --> 
+  <link rel="stylesheet" href="css/bootstrap.css">
+</head>
+<body>
+
+
+  <section class="jumbotron ">
+    <div class="container">
+
+      <h1 class="jumbotron-heading text-center">Fruits List</h1>
+
+      
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card" style="width: 100%;">
+            <div class="card-body">
+
+              <div class="row">
+                <div class="col-md-8">
+
+                  <!-- search button starts here -->
+                  <div class="row">
+                    <div class="col-md-12">
+
+                      <form id="frm2" name="frm2">
+                        <div class="input-group mb-3">
+                          <input type="text" class="form-control" placeholder="Search For Fruit" id="searchTerm" value="">
+                          <div class="input-group-append">
+                            <button class="btn btn-outline-secondary" type="button" onclick="searchFruit()">Search</button>
+                          </div>
+                        </div>
+                      </form>
+
+                      <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                          <div id="demo">
+                            
+                          </div>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+
+                  <!-- Fruits List starts here -->
+                  <div class="row">
+                    <div class="col-md-12">
+                      <h5>Here Is A List Of Fruits</h5>
+                      <button type="button" class="btn btn-success float-right mt-3" onclick="refreshPage()">Refresh List</button>
+                      <br>
+                      <br>
+                      <br>
+                      <ul class="list-group" id="fruit-joined">
+
+                      </ul>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="col-md-4">
+                  <!-- Add Fruits starts here -->
+                  <div class="row">
+                    <div class="col-md-12">
+
+                      <div class="card">
+                        <div class="card-header">
+                          Add New Fruits
+                        </div>
+                        <div class="card-body">
+
+
+                          <form id="frm1" name="frm1">
+
+                            <div class="row mb-4">
+                              <div class="col-md-12">
+                                <select class="form-control" id="fruitEmoji" value="">
+                                  <option value="">Select Fruit Emoji</option>
+                                  <option value="🥥">Coconut 🥥</option>
+                                  <option value="🥑">Avocado 🥑</option>
+                                  <option value="🍒">Cherries 🍒</option>
+                                  <option value="🍏">Green Apple 🍏</option>
+                                  <option value="🍑">Peach 🍑</option>
+                                </select>
+                              </div>
+                            </div>
+
+                            <div class="row mb-4">
+                              <div class="col-md-12">
+                                <div class="form-group">
+                                  <input type="text" class="form-control" id="fruitName" placeholder="Fruit Name" value="">
+                                </div>
+                              </div>
+                            </div>
+
+
+
+                            <div class="row">
+                              <div class="col-md-12">
+                                <button type="button" id="fruit" class="btn btn-primary btn-block" onclick="addFruit()">Add Fruit</button>
+                              </div>
+                            </div>
+
+                          </form>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+
+
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+</div>
+</section>
+</body>
+<script src="js/fruits.js"></script>
+</html>
+
+
