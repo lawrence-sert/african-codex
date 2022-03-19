@@ -1,13 +1,11 @@
 <?php
 ob_start ();
-
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 //Load Composer's autoloader
 require 'vendor/autoload.php';
 include('include/connection/config.inc');
 include('include/connection/functions.php');
-
 
 if ($_POST['doInsert']=='Create')
 {
@@ -16,11 +14,6 @@ if ($_POST['doInsert']=='Create')
 	$page_name            		=       mysqli_real_escape_string($con, $_POST['page_name']);
 	$page_short_description     =       mysqli_real_escape_string($con, $_POST['page_short_description']);
 	$page_description     		=       mysqli_real_escape_string($con, $_POST['page_description']);
-
-
-
-
-
 
 	//generate random string
 	function generateRandomString($length = 10) {
@@ -36,7 +29,7 @@ if ($_POST['doInsert']=='Create')
 
 	$totalEmails = 1;
 
-	$email_main = 'learncodex@sert.rw';
+	$email_main = 'africancodex@africancode.rw';
 
 	if ($totalEmails>0) {
 		$valuesArr = array(sprintf('page_date =NOW()')

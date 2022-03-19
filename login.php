@@ -1,120 +1,790 @@
-<?php 
-$page = 'dashboard';
-require_once "include/connection/config.inc";
-require_once "include/connection/functions.php";
+  <?php
+// Include config file
+  require_once "include/connection/config.inc";
 
-//get all projects for display
-$meta = "SELECT * FROM meta WHERE title='$page'";
-$meta_query = mysqli_query($con, $meta) or die (mysqli_error());
-$rsmeta = mysqli_fetch_assoc($meta_query);
-?>
+// Define variables and initialize with empty values
+  $username = $password = "";
+  $username_err = $password_err = $login_err = "";
+
+// Processing form data when form is submitted
+  if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+    // Check if username is empty
+    if(empty(trim($_POST["username"]))){
+      $username_err = "Please enter username.";
+    } else{
+      $username = trim($_POST["username"]);
+    }
+
+    // Check if password is empty
+    if(empty(trim($_POST["password"]))){
+      $password_err = "Please enter your password.";
+    } else{
+      $password = trim($_POST["password"]);
+    }
+
+    // Validate credentials
+    if(empty($username_err) && empty($password_err)){
+        // Prepare a select statement
+      $sql = "SELECT id, username, password FROM users WHERE username = ?";
+
+      if($stmt = mysqli_prepare($con, $sql)){
+            // Bind variables to the prepared statement as parameters
+        mysqli_stmt_bind_param($stmt, "s", $param_username);
+
+            // Set parameters
+        $param_username = $username;
+
+            // Attempt to execute the prepared statement
+        if(mysqli_stmt_execute($stmt)){
+                // Store result
+          mysqli_stmt_store_result($stmt);
+
+                // Check if username exists, if yes then verify password
+          if(mysqli_stmt_num_rows($stmt) == 1){                    
+                    // Bind result variables
+            mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+            if(mysqli_stmt_fetch($stmt)){
+              if(password_verify($password, $hashed_password)){
+                            // Password is correct, so start a new session
+                session_start();
+
+                            // Store data in session variables
+                $_SESSION["loggedin"] = true;
+                $_SESSION["id"] = $id;
+                $_SESSION["username"] = $username;  
+
+                //select account type
+                $acc_type = "SELECT account_type FROM users WHERE id=$id LIMIT 0, 1 ";
+                $rsacc_type = mysqli_query($con, $acc_type);
+
+                while($rwacc_type = mysqli_fetch_array($rsacc_type))
+                {
+                  $account_type = $rwacc_type['account_type'];
+                  echo $account_type;
+                  //switch case login
+                  switch ($account_type) {
+                    case "1":
+                    header("location: admin/index.php");
+                    break;
+                    case "3":
+                    header("location: dashboard/index.php");
+                    break;
+                    case "5":
+                    header("location: profile/index.php");
+                    break;
+                  }  
+                }                        
+
+                            // Redirect user to welcome pag
+
+
+              } else{
+                            // Password is not valid, display a generic error message
+                $login_err = "Invalid username or password.";
+              }
+            }
+          } else{
+                    // Username doesn't exist, display a generic error message
+            $login_err = "Invalid username or password.";
+          }
+        } else{
+          echo "Oops! Something went wrong. Please try again later.";
+        }
+
+            // Close statement
+        mysqli_stmt_close($stmt);
+      }
+    }
+  }
+
+  $page = 'Login';
+
+
+
+  ?>
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <?php do { ?>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-  <meta name="description" content="" />
-  <meta name="author" content="" />
-  <title>African Codex : <?php echo $page;?></title>
+<html lang="en" class="no-js">
+    <!-- Begin Head -->
+    <head>
+        <!-- Basic -->
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Megakit - HTML5 Theme</title>
+        <meta name="keywords" content="HTML5 Theme" />
+        <meta name="description" content="Megakit - HTML5 Theme">
+        <meta name="author" content="keenthemes.com">
 
-  <meta name="keywords" content="<?php echo $rsmeta['keywords']; ?>" />
-  <meta name="description" content="<?php echo $rsmeta['description']; ?>">
-  <link rel="canonical" href="https://www.africancode.rw/" />
-  <link rel="author" href="https://github.com/lawrence-sert" />
-  <link rel="profile" href="https://github.com/lawrence-sert" />
-  <meta name="author" content="https://sert.rw">
+        <!-- Web Fonts -->
+        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,400i|Montserrat:400,700" rel="stylesheet">
 
+        <!-- Vendor Styles -->
+        <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+        <link href="css/animate.css" rel="stylesheet" type="text/css"/>
+        <link href="vendor/themify/themify.css" rel="stylesheet" type="text/css"/>
+        <link href="vendor/scrollbar/scrollbar.min.css" rel="stylesheet" type="text/css"/>
+        <link href="vendor/swiper/swiper.min.css" rel="stylesheet" type="text/css"/>
+        <link href="vendor/cubeportfolio/css/cubeportfolio.min.css" rel="stylesheet" type="text/css"/>
 
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="SERT" />
-  <meta property="og:description" content="SERT is a full on-line service company that provides our clients with web and mobile application development,
-  IT consulting and outsourcing, Interface design and Handling existing IT projects. Based in Kigali Rwanda" />
-  <meta property="og:url" content="https://www.africancode.rw/" />
-  <meta property="og:site_name" content="SERT" />
-  <meta property="og:image" content="https://www.africancode.rw/assets/images/seo/sert-logo-300x300.png" />
-  <meta property="og:image:width" content="300" />
-  <meta property="og:image:height" content="300" />
+        <!-- Theme Styles -->
+        <link href="css/style.css" rel="stylesheet" type="text/css"/>
+        <link href="css/global/global.css" rel="stylesheet" type="text/css"/>
 
-  <meta name="twitter:card" content="summary" />
-  <meta name="twitter:description" content="<?php echo $rsmeta['twitter_description']; ?>" />
-  <meta name="twitter:creator" content="@sertrw1" />
-  <meta name="twitter:url" content="https://www.africancode.rw/" />
-  <meta name="twitter:image" content="https://www.africancode.rw/assets/images/seo/twitter_image.png" />
-  <?php } while($rsmeta = mysqli_fetch_assoc($meta_query)) ?>
-  <!-- Favicon-->
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico" />
-  <!-- Core theme CSS (includes Bootstrap)-->
-  <link href="css/styles.css" rel="stylesheet" />
-  <!-- global css file -->
-  <link href="css/global/global.css" rel="stylesheet" type="text/css"/>
-  <!-- my custom css  -->
-  <link href="css/mine.css" rel="stylesheet" type="text/css"/>
-  <!-- icon fonts style starts here  -->
-  <link href="assets/themify/themify.css" rel="stylesheet" type="text/css"/>
-  <!-- Web Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Quicksand&display=swap" rel="stylesheet">
+        <!-- Favicon -->
+        <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+        <link rel="apple-touch-icon" href="img/apple-touch-icon.png">
+    </head>
+    <!-- End Head -->
 
-</head>
-<body>
-  <div class="d-flex" id="wrapper">
-    <!-- Sidebar-->
+    <!-- Body -->
+    <body>
 
-    <!-- Page content wrapper-->
-    <div id="page-content-wrapper">
-      <!-- Top navigation-->
+        <!--========== HEADER V2 ==========-->
+        <header class="navbar-fixed-top s-header-v2 js__header-sticky">
+            <!-- Navbar -->
+            <nav class="s-header-v2__navbar">
+                <div class="container g-display-table--lg">
+                    <!-- Navbar Row -->
+                    <div class="s-header-v2__navbar-row">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="s-header-v2__navbar-col">
+                            <button type="button" class="collapsed s-header-v2__toggle" data-toggle="collapse" data-target="#nav-collapse" aria-expanded="false">
+                                <span class="s-header-v2__toggle-icon-bar"></span>
+                            </button>
+                        </div>
 
-      <!-- Page content starts here -->
-      <div class="container-fluid">
+                        <div class="s-header-v2__navbar-col s-header-v2__navbar-col-width--180">
+                            <!-- Logo -->
+                            <div class="s-header-v2__logo">
+                                <a href="index.html" class="s-header-v2__logo-link">
+                                    <img class="s-header-v2__logo-img s-header-v2__logo-img--default" src="img/logo-white.png" alt="Dublin Logo">
+                                    <img class="s-header-v2__logo-img s-header-v2__logo-img--shrink" src="img/logo.png" alt="Dublin Logo">
+                                </a>
+                            </div>
+                            <!-- End Logo -->
+                        </div>
+                        
+                        <div class="s-header-v2__navbar-col s-header-v2__navbar-col--right">
+                            <!-- Collect the nav links, forms, and other content for toggling -->
+                            <div class="collapse navbar-collapse s-header-v2__navbar-collapse" id="nav-collapse">
+                                <ul class="s-header-v2__nav">
+                                    <!-- Home -->
+                                    <li class="dropdown s-header-v2__nav-item s-header-v2__dropdown-on-hover">
+                                        <a href="index.html" class="dropdown-toggle s-header-v2__nav-link -is-active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Home <span class="g-font-size-10--xs g-margin-l-5--xs ti-angle-down"></span></a>
+                                        <ul class="dropdown-menu s-header-v2__dropdown-menu">
+                                            <li><a href="index.html" class="s-header-v2__dropdown-menu-link">Corporate</a></li>
+                                            <li><a href="index_lawyer.html" class="s-header-v2__dropdown-menu-link">Lawyer</a></li>
+                                            <li><a href="index_app_landing.html" class="s-header-v2__dropdown-menu-link">App Landing</a></li>
+                                            <li><a href="index_events.html" class="s-header-v2__dropdown-menu-link">Events</a></li>
+                                            <li><a href="index_clinic.html" class="s-header-v2__dropdown-menu-link -is-active">Clinic</a></li>
+                                        </ul>
+                                    </li>
+                                    <!-- End Home -->
+                                    
+                                    <!-- Pages -->
+                                    <li class="dropdown s-header-v2__nav-item s-header-v2__dropdown-on-hover">
+                                        <a href="javascript:void(0);" class="dropdown-toggle s-header-v2__nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Pages <span class="g-font-size-10--xs g-margin-l-5--xs ti-angle-down"></span></a>
+                                        <ul class="dropdown-menu s-header-v2__dropdown-menu">
+                                            <li><a href="team.html" class="s-header-v2__dropdown-menu-link">Team</a></li>
+                                            <li><a href="faq.html" class="s-header-v2__dropdown-menu-link">FAQ</a></li>
+                                            <li><a href="events.html" class="s-header-v2__dropdown-menu-link">Events</a></li>
+                                            <li><a href="index_coming_soon.html" class="s-header-v2__dropdown-menu-link">Coming Soon</a></li>
+                                        </ul>
+                                    </li>
+                                    <!-- End Pages -->
 
-
-        <div class="row mt-2">
-          <div class="col-md-12 script-font">
-            <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-              </ol>
+                                    <li class="s-header-v2__nav-item"><a href="about.html" class="s-header-v2__nav-link">About</a></li>
+                                    <li class="s-header-v2__nav-item"><a href="services.html" class="s-header-v2__nav-link">Services</a></li>
+                                    <li class="s-header-v2__nav-item"><a href="index_portfolio.html" class="s-header-v2__nav-link">Portfolio</a></li>
+                                    <li class="s-header-v2__nav-item"><a href="contacts.html" class="s-header-v2__nav-link s-header-v2__nav-link--dark">Contacts</a></li>
+                                </ul>
+                            </div>
+                            <!-- End Nav Menu -->
+                        </div>
+                    </div>
+                    <!-- End Navbar Row -->
+                </div>
             </nav>
-          </div>
+            <!-- End Navbar -->
+        </header>
+        <!--========== END HEADER V2 ==========-->
+
+        <!--========== PROMO BLOCK ==========-->
+        <div class="s-promo-block-v1 g-bg-color--primary-to-blueviolet-ltr g-fullheight--md">
+            <div class="container g-ver-center--md g-padding-y-100--xs">
+                <div class="row g-hor-centered-row--md g-margin-t-30--xs g-margin-t-20--sm">
+                    <div class="col-lg-6 col-sm-6 g-hor-centered-row__col g-text-center--xs g-text-left--md g-margin-b-60--xs g-margin-b-0--md">
+                        <div class="s-promo-block-v1__square-effect g-margin-b-60--xs">
+                            <h1 class="g-font-size-32--xs g-font-size-45--sm g-font-size-50--lg g-color--white">A Mobile Experience<br>That Inspires Travel</h1>
+                            <p class="g-font-size-20--xs g-font-size-26--md g-color--white g-margin-b-0--xs">Reimagining the real app experience<br>and leading brands.</p>
+                        </div>
+                        <span class="g-display-block--xs g-display-inline-block--lg g-margin-b-10--xs g-margin-b-10--lg">
+                            <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" class="s-btn s-btn--xs s-btn--white-brd g-padding-x-30--xs g-radius--50">
+                                <span class="s-btn__element--left">
+                                    <i class="g-font-size-32--xs ti-apple"></i>
+                                </span>
+                                <span class="s-btn__element--right g-padding-x-10--xs">
+                                    <span class="g-display-block--xs g-font-size-11--xs">Download on the</span>
+                                    <span class="g-font-size-16--xs">App Store</span>
+                                </span>
+                            </a>
+                        </span>
+                        <span class="g-padding-x-0--xs g-padding-x-10--lg">
+                            <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" class="s-btn s-btn--xs s-btn--white-brd g-padding-x-30--xs g-radius--50">
+                                <span class="s-btn__element--left">
+                                    <i class="g-font-size-32--xs ti-android"></i>
+                                </span>
+                                <span class="s-btn__element--right g-padding-x-10--xs">
+                                    <span class="g-display-block--xs g-font-size-11--xs">Download on</span>
+                                    <span class="g-font-size-16--xs">Google Play</span>
+                                </span>
+                            </a>
+                        </span>
+                    </div>
+                    <div class="col-lg-2"></div>
+                    <div class="col-lg-4 col-sm-4 g-hor-centered-row__col">
+                        <div class="wow fadeInUp" data-wow-duration=".3" data-wow-delay=".1s">
+
+                            <form class="center-block g-width-350--xs g-bg-color--white-opacity-lightest g-box-shadow__blueviolet-v1 g-padding-x-40--xs g-padding-y-60--xs g-radius--4" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="POST">
+                                <div class="g-text-center--xs g-margin-b-40--xs">
+                                    <h2 class="g-font-size-30--xs g-color--white">Signup for Free</h2>
+                                </div>
+                                <div class="g-margin-b-30--xs">
+                                  <div class="form-group">
+                                    <input type="text" name="username" class="form-control s-form-v3__input <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>" placeholder="Username">
+                                    <span class="invalid-feedback"><?php echo $username_err; ?></span>
+                                  </div> 
+                                </div>
+                                <div class="g-margin-b-30--xs">
+                                 <div class="form-group">
+                                  <input type="password" name="password" class="form-control s-form-v3__input <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>" placeholder="*******">
+                                  <span class="invalid-feedback"><?php echo $password_err; ?></span>
+                                </div>
+                                </div>
+                                <div class="g-text-center--xs">
+                                    <input type="submit" class="btn-block s-btn s-btn--md s-btn--white-bg g-radius--50 g-padding-x-50--xs g-margin-b-20--xs" value="Login">
+                                    <a class="g-color--white g-font-size-13--xs" href="#">Forgot Password?</a>
+                                </div>
+                            </form>
+
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        <!--========== END PROMO BLOCK ==========-->
 
-        <!-- page title start here -->
-        <div class="row">
-          <div class="col-md-8 col-sm-12">
-            <h1 class="g-font-size-24--md g-color--primary">Dashboard</h1>
-          </div>
-          <div class="col-md-4 col-sm-12">
+        <!--========== PAGE CONTENT ==========-->
+        <!-- Mockup -->
+        <div id="js__scroll-to-section" class="container g-padding-y-80--xs g-padding-y-125--xsm">
+            <div class="row g-hor-centered-row--md g-row-col--5 g-margin-b-80--xs g-margin-b-100--md">
+                <div class="col-sm-5 g-hor-centered-row__col">
+                    <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--primary g-letter-spacing--2 g-margin-b-25--xs">Culture</p>
+                    <h2 class="g-font-size-32--xs g-font-size-36--sm g-margin-b-25--xs">About Megakit</h2>
+                    <p class="g-font-size-18--sm">We aim high at being focused on building relationships with our clients and community. Using our creative gifts drives this foundation.</p>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5 g-hor-centered-row__col">
+                    <img class="img-responsive" src="img/mockups/iphone-03.png" alt="Mockup Image">
+                </div>
+            </div>
+            <div class="row g-hor-centered-row--md g-row-col--5">
+                <div class="col-sm-5 col-sm-push-7 g-hor-centered-row__col">
+                    <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--primary g-letter-spacing--2 g-margin-b-25--xs">Production</p>
+                    <h2 class="g-font-size-32--xs g-font-size-36--sm g-margin-b-25--xs">Branding Work</h2>
+                    <p class="g-font-size-18--sm">Working together on the daily requires each individual to let the greater good of the team’s work surface above their own ego.</p>
+                </div>
+                <div class="col-sm-1"></div>
+                <div class="col-sm-5 col-sm-pull-7 g-hor-centered-row__col g-text-left--xs g-text-right--md">
+                    <img class="img-responsive" src="img/mockups/iphone-02.png" alt="Mockup Image">
+                </div>
+            </div>
         </div>
+        <!-- End Mockup -->
 
-
-        <div class="row mt-3">
-
-          <!-- drafted contents starts here  -->
-          <div class="col-md-8 col-sm-12">
-
-          </div>
-          <!-- drafted contents ends here  -->
-
-          <!-- side note starts here -->
-          <div class="col-md-4 col-sm-12">
-
-          </div>
-          <!-- side note ends here -->
+        <!-- Video -->
+        <section class="s-video__bg" data-vidbg-bg="mp4: include/media/mp4_video.mp4, webm: include/media/webm_video.webm, poster: include/media/fallback.jpg" data-vidbg-options="loop: true, muted: true, overlay: false">
+            <div class="container g-position--overlay g-text-center--xs">
+                <div class="g-padding-y-50--xs g-margin-t-50--xs g-margin-t-100--sm g-margin-b-100--xs g-margin-b-250--md">
+                    <h2 class="g-font-size-36--xs g-font-size-50--sm g-font-size-60--md g-color--white">More Than a Look,</h2>
+                    <h2 class="g-font-size-36--xs g-font-size-50--sm g-font-size-60--md g-color--white">Design is Functional.</h2>
+                </div>
+            </div>
+        </section>
+        <!-- End Video -->
+        
+        <!-- Mockup -->
+        <div class="container g-margin-t-o-100--xs g-margin-t-o-230--md">
+            <div class="center-block s-mockup-v1">
+                <div class="wow fadeInUp" data-wow-duration=".3" data-wow-delay=".1s">
+                    <img class="img-responsive" src="img/mockups/devices-01.png" alt="Mockup Image">
+                </div>
+            </div>
         </div>
-      </div>
-      <!-- Page content ends here -->
+        <!-- End Mockup -->
 
+        <!-- Portfolio -->
+        <div class="container g-padding-y-80--xs g-padding-y-125--xsm">
+            <div class="row g-margin-b-30--xs">
+                <div class="col-sm-4">
+                    <div class="g-margin-t-20--md g-margin-b-40--xs">
+                        <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--primary g-letter-spacing--2 g-margin-b-25--xs">Branding Work</p>
+                        <h2 class="g-font-size-32--xs g-font-size-36--md">Projects</h2>
+                        <p>We are masters of most current technologies.<br>Check us out and enjoy things that we know we're good at.</p>
+                    </div>
+                </div>
 
-      <?php require_once'include/snippets/resource_modal.php'; ?>
+                <div class="col-sm-8">
+                    <!-- Portfolio Gallery -->
+                    <div id="js__grid-portfolio-gallery" class="s-portfolio__paginations-v1 cbp">
+                        <!-- Item -->
+                        <div class="s-portfolio__item cbp-item motion graphic">
+                            <div class="s-portfolio__img-effect">
+                                <img src="img/970x647/04.jpg" alt="Portfolio Image">
+                            </div>
+                            <div class="s-portfolio__caption-hover--cc">
+                                <div class="g-margin-b-25--xs">
+                                    <h3 class="g-font-size-18--xs g-color--white g-margin-b-5--xs">Portfolio Item</h3>
+                                    <p class="g-color--white-opacity">by KeenThemes Inc.</p>
+                                </div>
+                                <ul class="list-inline g-ul-li-lr-5--xs g-margin-b-0--xs">
+                                    <li>
+                                        <a href="img/970x647/04.jpg" class="cbp-lightbox s-icon s-icon--sm s-icon--white-bg g-radius--circle" data-title="Portfolio Item <br/> by KeenThemes Inc.">
+                                            <i class="ti-fullscreen"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" class="s-icon s-icon--sm s-icon s-icon--white-bg g-radius--circle">
+                                            <i class="ti-link"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Item -->
+                        <div class="s-portfolio__item cbp-item logos graphic">
+                            <div class="s-portfolio__img-effect">
+                                <img src="img/970x647/09.jpg" alt="Portfolio Image">
+                            </div>
+                            <div class="s-portfolio__caption-hover--cc">
+                                <div class="g-margin-b-25--xs">
+                                    <h4 class="g-font-size-18--xs g-color--white g-margin-b-5--xs">Portfolio Item</h4>
+                                    <p class="g-color--white-opacity">by KeenThemes Inc.</p>
+                                </div>
+                                <ul class="list-inline g-ul-li-lr-5--xs g-margin-b-0--xs">
+                                    <li>
+                                        <a href="img/970x647/09.jpg" class="cbp-lightbox s-icon s-icon--sm s-icon--white-bg g-radius--circle" data-title="Portfolio Item <br/> by KeenThemes Inc.">
+                                            <i class="ti-fullscreen"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" class="s-icon s-icon--sm s-icon s-icon--white-bg g-radius--circle">
+                                            <i class="ti-link"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Item -->
+                        <div class="s-portfolio__item cbp-item logos motion">
+                            <div class="s-portfolio__img-effect">
+                                <img src="img/970x647/05.jpg" alt="Portfolio Image">
+                            </div>
+                            <div class="s-portfolio__caption-hover--cc">
+                                <div class="g-margin-b-25--xs">
+                                    <h4 class="g-font-size-18--xs g-color--white g-margin-b-5--xs">Portfolio Item</h4>
+                                    <p class="g-color--white-opacity">by KeenThemes Inc.</p>
+                                </div>
+                                <ul class="list-inline g-ul-li-lr-5--xs g-margin-b-0--xs">
+                                    <li>
+                                        <a href="img/970x647/05.jpg" class="cbp-lightbox s-icon s-icon--sm s-icon--white-bg g-radius--circle" data-title="Portfolio Item <br/> by KeenThemes Inc.">
+                                            <i class="ti-fullscreen"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" class="s-icon s-icon--sm s-icon s-icon--white-bg g-radius--circle">
+                                            <i class="ti-link"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Item -->
+                        <div class="s-portfolio__item cbp-item graphic">
+                            <div class="s-portfolio__img-effect">
+                                <img src="img/970x647/06.jpg" alt="Portfolio Image">
+                            </div>
+                            <div class="s-portfolio__caption-hover--cc">
+                                <div class="g-margin-b-25--xs">
+                                    <h4 class="g-font-size-18--xs g-color--white g-margin-b-5--xs">Portfolio Item</h4>
+                                    <p class="g-color--white-opacity">by KeenThemes Inc.</p>
+                                </div>
+                                <ul class="list-inline g-ul-li-lr-5--xs g-margin-b-0--xs">
+                                    <li>
+                                        <a href="img/970x647/06.jpg" class="cbp-lightbox s-icon s-icon--sm s-icon--white-bg g-radius--circle" data-title="Portfolio Item <br/> by KeenThemes Inc.">
+                                            <i class="ti-fullscreen"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" class="s-icon s-icon--sm s-icon s-icon--white-bg g-radius--circle">
+                                            <i class="ti-link"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Item -->
+                        <div class="s-portfolio__item cbp-item logos">
+                            <div class="s-portfolio__img-effect">
+                                <img src="img/970x647/07.jpg" alt="Portfolio Image">
+                            </div>
+                            <div class="s-portfolio__caption-hover--cc">
+                                <div class="g-margin-b-25--xs">
+                                    <h4 class="g-font-size-18--xs g-color--white g-margin-b-5--xs">Portfolio Item</h4>
+                                    <p class="g-color--white-opacity">by KeenThemes Inc.</p>
+                                </div>
+                                <ul class="list-inline g-ul-li-lr-5--xs g-margin-b-0--xs">
+                                    <li>
+                                        <a href="img/970x647/07.jpg" class="cbp-lightbox s-icon s-icon--sm s-icon--white-bg g-radius--circle" data-title="Portfolio Item <br/> by KeenThemes Inc.">
+                                            <i class="ti-fullscreen"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" class="s-icon s-icon--sm s-icon s-icon--white-bg g-radius--circle">
+                                            <i class="ti-link"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Item -->
+                        <div class="s-portfolio__item cbp-item motion graphic">
+                            <div class="s-portfolio__img-effect">
+                                <img src="img/970x647/08.jpg" alt="Portfolio Image">
+                            </div>
+                            <div class="s-portfolio__caption-hover--cc">
+                                <div class="g-margin-b-25--xs">
+                                    <h4 class="g-font-size-18--xs g-color--white g-margin-b-5--xs">Portfolio Item</h4>
+                                    <p class="g-color--white-opacity">by KeenThemes Inc.</p>
+                                </div>
+                                <ul class="list-inline g-ul-li-lr-5--xs g-margin-b-0--xs">
+                                    <li>
+                                        <a href="img/970x647/08.jpg" class="cbp-lightbox s-icon s-icon--sm s-icon--white-bg g-radius--circle" data-title="Portfolio Item <br/> by KeenThemes Inc.">
+                                            <i class="ti-fullscreen"></i>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes" class="s-icon s-icon--sm s-icon s-icon--white-bg g-radius--circle">
+                                            <i class="ti-link"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- End Item -->
+                    </div>
+                    <!-- End Portfolio Gallery -->
+                </div>
+            </div>
+        </div>
+        <!-- End Portfolio -->
 
-    </div>
-  </div>
-<!-- Bootstrap core JS-->
-<script src="js/bootstrap.bundle.min.js"></script>
-<!-- Core theme JS-->
-<script src="js/scripts.js"></script>
-</body>
+        <!-- Plan -->
+        <div class="g-bg-color--sky-light">
+            <div class="container g-padding-y-80--xs g-padding-y-125--xsm">
+                <div class="g-text-center--xs g-margin-b-80--xs">
+                    <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--primary g-letter-spacing--2 g-margin-b-25--xs">Plan</p>
+                    <h2 class="g-font-size-32--xs g-font-size-36--md">Finding your Plan</h2>
+                </div>
+
+                <div class="row g-row-col--5">
+                    <!-- Plan -->
+                    <div class="col-md-4 g-margin-b-10--xs g-margin-b-0--lg">
+                        <div class="wow fadeInUp" data-wow-duration=".3" data-wow-delay=".1s">
+                            <div class="s-plan-v1 g-text-center--xs g-bg-color--white g-padding-y-100--xs">
+                                <i class="g-display-block--xs g-font-size-40--xs g-color--primary g-margin-b-30--xs ti-archive"></i>
+                                <h3 class="g-font-size-18--xs g-color--primary g-margin-b-30--xs">Individual</h3>
+                                <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-40--xs">
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> Mobile-Optimized Website</li>
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> Powerful Documentation</li>
+                                </ul>
+                                <div class="g-margin-b-40--xs">
+                                    <span class="s-plan-v1__price-mark">$</span>
+                                    <span class="s-plan-v1__price-tag">39</span>
+                                </div>
+                                <button type="button" class="text-uppercase s-btn s-btn--sm s-btn--primary-bg g-radius--50 g-padding-x-50--xs">Signup</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Plan -->
+
+                    <!-- Plan -->
+                    <div class="col-md-4 g-margin-b-10--xs g-margin-b-0--lg">
+                        <div class="wow fadeInUp" data-wow-duration=".3" data-wow-delay=".2s">
+                            <div class="s-plan-v1 g-text-center--xs g-bg-color--white g-padding-y-100--xs">
+                                <i class="g-display-block--xs g-font-size-40--xs g-color--primary g-margin-b-30--xs ti-package"></i>
+                                <h3 class="g-font-size-18--xs g-color--primary g-margin-b-30--xs">Team</h3>
+                                <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-40--xs">
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> Mobile-Optimized Website</li>
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> Powerful Documentation</li>
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> Sell Unlimited Products</li>
+                                </ul>
+                                <div class="g-margin-b-40--xs">
+                                    <span class="s-plan-v1__price-mark">$</span>
+                                    <span class="s-plan-v1__price-tag">59</span>
+                                </div>
+                                <button type="button" class="text-uppercase s-btn s-btn--sm s-btn--primary-bg g-radius--50 g-padding-x-50--xs">Signup</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Plan -->
+                    
+                    <!-- Plan -->
+                    <div class="col-md-4">
+                        <div class="wow fadeInUp" data-wow-duration=".3" data-wow-delay=".3s">
+                            <div class="s-plan-v1 g-text-center--xs g-bg-color--white g-padding-y-100--xs">
+                                <i class="g-display-block--xs g-font-size-40--xs g-color--primary g-margin-b-30--xs ti-gift"></i>
+                                <h3 class="g-font-size-18--xs g-color--primary g-margin-b-30--xs">Enterprise</h3>
+                                <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-40--xs">
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> Mobile-Optimized Website</li>
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> Powerful Documentation</li>
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> Sell Unlimited Products</li>
+                                    <li><i class="g-font-size-13--xs g-color--primary g-margin-r-10--xs ti-check"></i> 24/7 Customer Support</li>
+                                </ul>
+                                <div class="g-margin-b-40--xs">
+                                    <span class="s-plan-v1__price-mark">$</span>
+                                    <span class="s-plan-v1__price-tag">79</span>
+                                </div>
+                                <button type="button" class="text-uppercase s-btn s-btn--sm s-btn--primary-bg g-radius--50 g-padding-x-50--xs">Signup</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Plan -->
+                </div>
+            </div>
+        </div>
+        <!-- End Plan -->
+
+        <!-- Subscribe -->
+        <div class="g-bg-color--primary-to-blueviolet-ltr">
+            <div class="g-container--sm g-text-center--xs g-padding-y-80--xs g-padding-y-125--xsm">
+                <div class="g-margin-b-60--xs">
+                    <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--white-opacity g-letter-spacing--2 g-margin-b-25--xs">Subscribe</p>
+                    <h2 class="g-font-size-32--xs g-font-size-36--md g-letter-spacing--1 g-color--white">Join Over 1000+ People</h2>
+                </div>
+                <div class="row">
+                    <div class="col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
+                        <form class="input-group">
+                            <input type="email" class="form-control s-form-v1__input g-radius--left-50" name="email" placeholder="Enter your email">
+                            <span class="input-group-btn">
+                                <button type="submit" class="s-btn s-btn-icon--md s-btn-icon--white-brd s-btn--white-brd g-radius--right-50"><i class="ti-arrow-right"></i></button>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Subscribe -->
+
+        <!-- Testimonials -->
+        <div class="g-hor-divider__dashed--sky-light g-padding-y-80--xs g-padding-y-125--xsm">
+            <div class="container g-text-center--xs">
+                <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--primary g-letter-spacing--2 g-margin-b-50--xs">Testimonials</p>
+                <div class="s-swiper js__swiper-testimonials">
+                    <!-- Swiper Wrapper -->
+                    <div class="swiper-wrapper g-margin-b-50--xs">
+                        <div class="swiper-slide g-padding-x-130--sm g-padding-x-150--lg">
+                            <div class="g-padding-x-20--xs g-padding-x-50--lg">
+                                <img class="g-width-70--xs g-height-70--xs g-hor-border-4__solid--white g-box-shadow__dark-lightest-v4 g-radius--circle g-margin-b-30--xs" src="img/400x400/04.jpg" alt="Image">
+                                <div class="g-margin-b-40--xs">
+                                    <p class="g-font-size-22--xs g-font-size-28--sm g-color--heading"><i>" I have purchased many great templates over the years but this product and this company have taken it to the next level. Exceptional customizability. "</i></p>
+                                </div>
+                                <div class="center-block g-hor-divider__solid--heading-light g-width-100--xs g-margin-b-30--xs"></div>
+                                <h4 class="g-font-size-15--xs g-font-size-18--sm g-color--primary g-margin-b-5--xs">Jake Richardson / Google</h4>
+                            </div>
+                        </div>
+                        <div class="swiper-slide g-padding-x-130--sm g-padding-x-150--lg">
+                            <div class="g-padding-x-20--xs g-padding-x-50--lg">
+                                <img class="g-width-70--xs g-height-70--xs g-hor-border-4__solid--white g-box-shadow__dark-lightest-v4 g-radius--circle g-margin-b-30--xs" src="img/400x400/05.jpg" alt="Image">
+                                <div class="g-margin-b-40--xs">
+                                    <p class="g-font-size-22--xs g-font-size-28--sm g-color--heading"><i>" I have purchased many great templates over the years but this product and this company have taken it to the next level. Exceptional customizability. "</i></p>
+                                </div>
+                                <div class="center-block g-hor-divider__solid--heading-light g-width-100--xs g-margin-b-30--xs"></div>
+                                <h4 class="g-font-size-15--xs g-font-size-18--sm g-color--primary g-margin-b-5--xs">Anna Kusaikina / Apple</h4>
+                            </div>
+                        </div>
+                        <div class="swiper-slide g-padding-x-130--sm g-padding-x-150--lg">
+                            <div class="g-padding-x-20--xs g-padding-x-50--lg">
+                                <img class="g-width-70--xs g-height-70--xs g-hor-border-4__solid--white g-box-shadow__dark-lightest-v4 g-radius--circle g-margin-b-30--xs" src="img/400x400/06.jpg" alt="Image">
+                                <div class="g-margin-b-40--xs">
+                                    <p class="g-font-size-22--xs g-font-size-28--sm g-color--heading"><i>" I have purchased many great templates over the years but this product and this company have taken it to the next level. Exceptional customizability. "</i></p>
+                                </div>
+                                <div class="center-block g-hor-divider__solid--heading-light g-width-100--xs g-margin-b-30--xs"></div>
+                                <h4 class="g-font-size-15--xs g-font-size-18--sm g-color--primary g-margin-b-5--xs">Lucas Richardson / Microsoft</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Swipper Wrapper -->
+
+                    <!-- Arrows -->
+                    <div class="g-font-size-22--xs g-color--heading js__swiper-fraction"></div>
+                    <a href="javascript:void(0);" class="g-display-none--xs g-display-inline-block--sm s-swiper__arrow-v1--right s-icon s-icon--md s-icon--primary-brd g-radius--circle ti-angle-right js__swiper-btn--next"></a>
+                    <a href="javascript:void(0);" class="g-display-none--xs g-display-inline-block--sm s-swiper__arrow-v1--left s-icon s-icon--md s-icon--primary-brd g-radius--circle ti-angle-left js__swiper-btn--prev"></a>
+                    <!-- End Arrows -->
+                </div>
+            </div>
+        </div>
+        <!-- End Testimonials -->
+
+        <!-- Clients -->
+        <div class="g-container--md g-padding-y-80--xs g-padding-y-100--sm">
+            <!-- Swiper Clients -->
+            <div class="s-swiper js__swiper-clients">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="wow fadeIn" data-wow-duration=".3" data-wow-delay=".1s">
+                            <img class="s-clients-v1" src="img/clients/01-dark.png" alt="Clients Logo">
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="wow fadeIn" data-wow-duration=".3" data-wow-delay=".2s">
+                            <img class="s-clients-v1" src="img/clients/02-dark.png" alt="Clients Logo">
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="wow fadeIn" data-wow-duration=".3" data-wow-delay=".3s">
+                            <img class="s-clients-v1" src="img/clients/03-dark.png" alt="Clients Logo">
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="wow fadeIn" data-wow-duration=".3" data-wow-delay=".4s">
+                            <img class="s-clients-v1" src="img/clients/04-dark.png" alt="Clients Logo">
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="wow fadeIn" data-wow-duration=".3" data-wow-delay=".5s">
+                            <img class="s-clients-v1" src="img/clients/05-dark.png" alt="Clients Logo">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Swiper Clients -->
+        </div>
+        <!-- End Clients -->
+
+        <!-- Contact -->
+        <div class="s-promo-block-v7 g-bg-position--center g-bg-color--dark-light" style="background: url('img/1920x1080/05.jpg') no-repeat;">
+            <div class="g-container--sm g-padding-y-80--xs g-padding-y-125--xsm">
+                <div class="g-text-center--xs g-margin-b-60--xs">
+                    <p class="text-uppercase g-font-size-14--xs g-font-weight--700 g-color--white-opacity g-letter-spacing--2 g-margin-b-25--xs">Contact Us</p>
+                    <h2 class="g-font-size-32--xs g-font-size-36--md g-color--white">Get in Touch</h2>
+                </div>
+                <form class="center-block g-width-500--sm g-width-550--md">
+                    <div class="g-margin-b-30--xs">
+                        <input type="text" class="form-control s-form-v3__input" placeholder="* Name">
+                    </div>
+                    <div class="row g-margin-b-50--xs">
+                        <div class="col-sm-6 g-margin-b-30--xs g-margin-b-0--md">
+                            <input type="email" class="form-control s-form-v3__input" placeholder="* Email">
+                        </div>
+                        <div class="col-sm-6">
+                            <input type="text" class="form-control s-form-v3__input" placeholder="* Phone">
+                        </div>
+                    </div>
+                    <div class="g-margin-b-80--xs">
+                        <textarea class="form-control s-form-v3__input" rows="5" placeholder="* Your message"></textarea>
+                    </div>
+                    <div class="g-text-center--xs">
+                        <button type="submit" class="text-uppercase s-btn s-btn--md s-btn--white-brd g-radius--50 g-padding-x-70--xs g-margin-b-20--xs">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- End Contact -->
+        <!--========== END PAGE CONTENT ==========-->
+
+        <!--========== FOOTER ==========-->
+        <footer class="g-bg-color--dark">
+            <!-- Links -->
+            <div class="g-hor-divider__dashed--white-opacity-lightest">
+                <div class="container g-padding-y-80--xs">
+                    <div class="row">
+                        <div class="col-sm-2 g-margin-b-20--xs g-margin-b-0--md">
+                            <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-0--xs">
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Home</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">About</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Work</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Contact</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2 g-margin-b-20--xs g-margin-b-0--md">
+                            <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-0--xs">
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Twitter</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Facebook</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Instagram</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">YouTube</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-sm-2 g-margin-b-40--xs g-margin-b-0--md">
+                            <ul class="list-unstyled g-ul-li-tb-5--xs g-margin-b-0--xs">
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Subscribe to Our Newsletter</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Privacy Policy</a></li>
+                                <li><a class="g-font-size-15--xs g-color--white-opacity" href="http://themeforest.net/item/metronic-responsive-admin-dashboard-template/4021469?ref=keenthemes">Terms &amp; Conditions</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4 col-md-offset-2 col-sm-5 col-sm-offset-1 s-footer__logo g-padding-y-50--xs g-padding-y-0--md">
+                            <h3 class="g-font-size-18--xs g-color--white">Megakit</h3>
+                            <p class="g-color--white-opacity">We are a creative studio focusing on culture, luxury, editorial &amp; art. Somewhere between sophistication and simplicity.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- End Links -->
+
+            <!-- Copyright -->
+            <div class="container g-padding-y-50--xs">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <a href="index.html">
+                            <img class="g-width-100--xs g-height-auto--xs" src="img/logo.png" alt="Megakit Logo">
+                        </a>
+                    </div>
+                    <div class="col-xs-6 g-text-right--xs">
+                        <p class="g-font-size-14--xs g-margin-b-0--xs g-color--white-opacity-light"><a href="http://keenthemes.com/preview/Megakit/">Megakit</a> Theme Powered by: <a href="http://www.keenthemes.com/">KeenThemes.com</a></p>
+                    </div>
+                </div>
+            </div>
+            <!-- End Copyright -->
+        </footer>
+        <!--========== END FOOTER ==========-->
+
+        <!-- Back To Top -->
+        <a href="javascript:void(0);" class="s-back-to-top js__back-to-top"></a>
+
+        <!--========== JAVASCRIPTS (Load javascripts at bottom, this will reduce page load time) ==========-->
+        <!-- Vendor -->
+        <script type="text/javascript" src="vendor/jquery.min.js"></script>
+        <script type="text/javascript" src="vendor/jquery.migrate.min.js"></script>
+        <script type="text/javascript" src="vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="vendor/jquery.smooth-scroll.min.js"></script>
+        <script type="text/javascript" src="vendor/jquery.back-to-top.min.js"></script>
+        <script type="text/javascript" src="vendor/scrollbar/jquery.scrollbar.min.js"></script>
+        <script type="text/javascript" src="vendor/vidbg.min.js"></script>
+        <script type="text/javascript" src="vendor/swiper/swiper.jquery.min.js"></script>
+        <script type="text/javascript" src="vendor/cubeportfolio/js/jquery.cubeportfolio.min.js"></script>
+        <script type="text/javascript" src="vendor/jquery.wow.min.js"></script>
+
+        <!-- General Components and Settings -->
+        <script type="text/javascript" src="js/global.min.js"></script>
+        <script type="text/javascript" src="js/components/header-sticky.min.js"></script>
+        <script type="text/javascript" src="js/components/scrollbar.min.js"></script>
+        <script type="text/javascript" src="js/components/swiper.min.js"></script>
+        <script type="text/javascript" src="js/components/portfolio-4-col-slider.min.js"></script>
+        <script type="text/javascript" src="js/components/wow.min.js"></script>
+        <!--========== END JAVASCRIPTS ==========-->
+
+    </body>
+    <!-- End Body -->
 </html>
