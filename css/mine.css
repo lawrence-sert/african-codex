@@ -1,5 +1,22 @@
+/*login page styling*/
+
+.reg-title-note {
+  font-family: 'Fira Code', monospace;
+  font-size : 12px;
+}
+
+.reg-title-heading {
+  font-family: 'Fira Code', monospace;
+  font-size : 16px;
+  color : #ccc;
+}
+
+.dotted {
+  border-bottom : 1px dashed #ccc;
+}
 .code-font {
-  font-family: 'Ubuntu', sans-serif;
+  font-family: 'Fira Code', monospace;
+  font-size : 12px;
 }
 
 .script-font {
@@ -70,6 +87,6 @@ a:hover, a:focus {
 }
 
 .language-tab {
-	border-top : 1px dashed #ccc;
+  padding : 10px;
 }
 

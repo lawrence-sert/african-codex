@@ -50,7 +50,11 @@
                   <span id="demo"></span>
                 </div>
               </div>
-              
+
+              <label for="myCheck">Hide All :</label> 
+              <input type="checkbox" id="myCheck" onclick="myFunction()">
+
+              <p id="text" style="display:none">Checkbox is CHECKED!</p>
 
             </div>
           </div>
@@ -61,7 +65,21 @@
     </div>
   </section>
 </body>
-<script src="js/word-widget.js"></script>
+
+<script>
+function myFunction() {
+  var checkBox = document.getElementById("myCheck");
+  var text = document.getElementById("text");
+  if (checkBox.checked == true){
+    text.style.display = "block";
+    console.log('hell');
+  } else {
+     text.style.display = "none";
+     console.log('hellow');
+  }
+}
+</script>
+<script type="text/javascript" src="js/word-widget.js"></script>
 </html>
 
 

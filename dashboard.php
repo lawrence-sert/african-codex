@@ -20,6 +20,7 @@ else {
   $rsuser = mysqli_fetch_assoc($user_query);
 }
 
+
 //get all projects for display
 $meta = "SELECT * FROM meta WHERE title='$page'";
 $meta_query = mysqli_query($con, $meta) or die (mysqli_error());
@@ -80,6 +81,8 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 
 
 </head>
+
+<?php do { ?>
 <body>
   <div class="d-flex" id="wrapper">
     <!-- Sidebar-->
@@ -98,7 +101,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
           <div class="col-md-12 script-font">
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item code-font"><a href="index.php">Dashboard</a></li>
+                <li class="breadcrumb-item code-font text-muted"><a href="index.php">Dashboard</a></li>
               </ol>
             </nav>
           </div>
@@ -142,4 +145,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 <!-- Core theme JS-->
 <script src="js/scripts.js"></script>
 </body>
+<?php } while($rsuser = mysqli_fetch_assoc($user_query))?>
+
+
 </html>

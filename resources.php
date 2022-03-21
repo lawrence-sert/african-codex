@@ -1,7 +1,24 @@
-<?php 
-$page = 'guessing-game';
+<?php
+// Initialize the session
+session_start();
+
+$page = 'dashboard';
 require_once "include/connection/config.inc";
 require_once "include/connection/functions.php";
+
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+else {
+  $usrId = $_SESSION["id"];
+  //get all projects for display
+  $user = "SELECT * FROM users WHERE id='$usrId'";
+  $user_query = mysqli_query($con, $user) or die (mysqli_error());
+  $rsuser = mysqli_fetch_assoc($user_query);
+}
 
 //get all projects for display
 $meta = "SELECT * FROM meta WHERE title='$page'";
@@ -53,7 +70,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
   <link href="css/mine.css" rel="stylesheet" type="text/css"/>
   <!-- icon fonts style starts here  -->
   <link href="assets/themify/themify.css" rel="stylesheet" type="text/css"/>
-  <link href="css/all.css" rel="stylesheet" type="text/css"/>
+  
 
   <!-- prism theme starts here  -->
   <link href="css/prism.css" rel="stylesheet" />
@@ -83,8 +100,8 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
           <div class="col-md-12">
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="index.php">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Resources</li>
+                <li class="breadcrumb-item code-font text-muted"><a href="index.php">Dashboard</a></li>
+                <li class="breadcrumb-item code-font active" aria-current="page">Resources</li>
               </ol>
             </nav>
           </div>
@@ -93,10 +110,16 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
         <!-- page title start here -->
         <div class="row">
           <div class="col-md-8 col-sm-12">
-            <h1 class="g-font-size-24--md g-color--primary">Resources <i class="fa-light fa-sort-numeric-down"></i></h1>
+            <h1 class="g-font-size-24--md g-color--primary"> <i class="g-padding-r-5--xs ti-package g-font-size-20--md"></i> Resources <i class="fa-solid fa-angle-left"></i> 
+            </h1>
           </div>
           <div class="col-md-4 col-sm-12">
-        </div>
+            <span class="float-end">
+                <a href="#" data-bs-toggle="modal" data-bs-target="#resourceModal">
+                  <i class="g-padding-r-5--xs ti-pencil-alt2 "></i> Add New Resource
+                </a>
+              </span>
+          </div>
 
 
         <div class="row mt-3">
@@ -132,11 +155,16 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                     <?php 
                     $rss_id = $rsresources['rss_id'];
                     $rss_name = $rsresources['rss_name'];
+
+                    $rss_date = $rsresources['rss_date'];
+                    $resourcedate = strtotime( $rss_date );
+                    $rssdate = date( 'Y-m-d H:i:s', $resourcedate );
+
                     $rss_notes = $rsresources['rss_notes'];
                     $rss_code = $rsresources['rss_code'];
                     $rss_type = $rsresources['rss_type'];
                     $rss_language = $rsresources['rss_language'];
-                    $length_title = '40';
+                    $length_title = '35';
                     $length = '90';
 
                     //if resource empty
@@ -162,7 +190,8 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                           <hr>
                           <div class="row g-font-size-13--md text-center">
                             <div class="col-4">
-                             <i class="g-padding-r-2--xs ti-calendar"></i> (32)
+                             <i class="g-padding-r-2--xs ti-calendar"></i> 
+                             <span class="dotted"><small><?php echo get_time_ago(strtotime($rssdate)); ?></small></span>
                            </div>
                            <div class="col-4">
                             <i class="g-padding-r-2--xs ti-packages"></i> PHP

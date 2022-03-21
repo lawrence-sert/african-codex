@@ -16,7 +16,7 @@
                 </li>
                    <li class="nav-item">
                     <a class="nav-link" href="resources.php">
-                        <i class="g-padding-r-5--xs ti-package"></i> Resources
+                        <i class="g-padding-r-5--xs ti-archive"></i> Resources
                     </a>
                 </li>
                 <li class="nav-item">

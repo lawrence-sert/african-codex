@@ -1,7 +1,24 @@
 <?php 
-$page = 'guessing-game';
+// Initialize the session
+session_start();
+
+$page = 'dashboard';
 require_once "include/connection/config.inc";
 require_once "include/connection/functions.php";
+
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+else {
+  $usrId = $_SESSION["id"];
+  //get all projects for display
+  $user = "SELECT * FROM users WHERE id='$usrId'";
+  $user_query = mysqli_query($con, $user) or die (mysqli_error());
+  $rsuser = mysqli_fetch_assoc($user_query);
+}
 
 //get all projects for display
 $meta = "SELECT * FROM meta WHERE title='$page'";

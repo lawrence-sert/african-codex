@@ -1,4 +1,4 @@
-<?php 
+<?php
 // Initialize the session
 session_start();
 
@@ -82,12 +82,9 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 </head>
 <body>
   <div class="d-flex" id="wrapper">
-    <!-- Sidebar-->
-    <?php require_once'include/elements/sidebar.php';?>
-    <!-- Page content wrapper-->
+
     <div id="page-content-wrapper">
-      <!-- Top navigation-->
-      <?php require_once'include/elements/navbar.php';?>
+
 
 
       <!-- Page content starts here -->

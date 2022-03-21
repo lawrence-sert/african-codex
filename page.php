@@ -1,7 +1,24 @@
-<?php 
-$page = 'guessing-game';
+<?php
+// Initialize the session
+session_start();
+
+$page = 'dashboard';
 require_once "include/connection/config.inc";
 require_once "include/connection/functions.php";
+
+ 
+// Check if the user is logged in, if not then redirect him to login page
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+    header("location: login.php");
+    exit;
+}
+else {
+  $usrId = $_SESSION["id"];
+  //get all projects for display
+  $user = "SELECT * FROM users WHERE id='$usrId'";
+  $user_query = mysqli_query($con, $user) or die (mysqli_error());
+  $rsuser = mysqli_fetch_assoc($user_query);
+}
 
 $page_code =  $_GET['page_code'];
 $pge = "SELECT * FROM page WHERE page_code='$page_code'";
@@ -61,7 +78,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
     <link href="css/mine.css" rel="stylesheet" type="text/css"/>
     <!-- icon fonts style starts here  -->
     <link href="assets/themify/themify.css" rel="stylesheet" type="text/css"/>
-    <script src="https://kit.fontawesome.com/e77271821d.js" crossorigin="anonymous"></script>
+    
     <!-- prism theme starts here  -->
   <link href="css/prism.css" rel="stylesheet" />
 
@@ -97,6 +114,8 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 
                 <?php echo $rspge['page_description']; ?>
 
+                
+
                 <div class="row mt-4">
               <div class="col-12">
                 <h4 class="g-font-size-16--md g-color--primary">Code Snippets</h4>
@@ -130,12 +149,12 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                      </li>
                      <li class="nav-item" role="presentation">
                         <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
-                           <i class="g-padding-r-5--xs ti-packages"></i> Rss & Links
+                           <i class="g-padding-r-5--xs ti-archive"></i> Rss & Links
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">
-                            <i class="fa-light fa-code"></i> Code
+                            <i class="fa fa-address-book" aria-hidden="true"></i>Code
                         </button>
                     </li>
                 </ul>
@@ -149,7 +168,10 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                           <div class="">
                             <!-- query all relavant notes for this page -->
                             <?php pageNotes($page_code);?>
-                          </div>
+                            
+                              <?php echo get_time_ago(strtotime("2020-12-16 12:50:00")); ?>
+
+                            </div>
                         </div>
 
                           <div class="tabbie-content-bottom">
@@ -200,7 +222,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                               <div class="col g-text-center--md">
                                 <span class="float-end">
                                   <a href="#" data-bs-toggle="modal" data-bs-target="#codeModal">
-                                    <i class="g-padding-r-5--xs ti-pencil-alt2 "></i> Code Snippet
+                                    <i class="fa-solid fa-terminal"></i>  <i class="fa-solid fa-angle-left"></i>Code Snippet
                                   </a>
                                 </span>   
                               </div>
