@@ -59,6 +59,28 @@ function rssLanguage($rss_language) {
 
 }
 
+function languageName($language_id) {
+
+	$con = mysqli_connect("localhost","root","","learncodex");
+	if (mysqli_connect_errno()) {
+	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	  exit();
+	}
+
+
+	$langName = "SELECT language_name FROM language WHERE language_id='$language_id' ";
+	$rslangName  = mysqli_query($con, $langName);
+
+	while($rwlangName = mysqli_fetch_array($rslangName))
+	{
+
+		$language_name = $rwlangName['language_name'];
+
+		return $language_name;
+	}
+
+}
+
 
 function usrCode($usrId) {
 

@@ -98,7 +98,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
           <div class="col-md-12 script-font">
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item code-font text-muted"><a href="index.php">Dashboard</a></li>
+                <li class="breadcrumb-item code-font text-muted"><a href="dashboard.php">Dashboard</a></li>
                 <li class="breadcrumb-item code-font active" aria-current="page">GitHub Repos</li>
               </ol>
             </nav>
@@ -139,7 +139,6 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
   </div>
 <!-- Bootstrap core JS-->
 <script src="js/checknet.js"></script>
-<script src="js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
 <script src="js/scripts.js"></script>
 </body>

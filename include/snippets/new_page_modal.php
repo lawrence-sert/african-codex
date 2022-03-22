@@ -13,7 +13,7 @@
           <div class="modal-body">
 
             <div class="row">
-              <div class="col-6"></div>
+              
               <div class="col-6">
                 <div class="mb-3">
                   <div class="form-group">
@@ -26,6 +26,20 @@
                   </div>
                 </div>
               </div>
+
+              <div class="col-6">
+                <div class="mb-3">
+                  <div class="form-group">
+                    <select class="form-control select2" name="language" style="width: 100%;" required>
+                      <label for="exampleFormControlInput1" class="form-label">Programing Language</label>
+                      <?php do { ?>
+                      <option value="<?php echo $rslanguage['language_id']; ?>"><?php echo $rslanguage['language_name']; ?></option>
+                    <?php } while($rslanguage = mysqli_fetch_assoc($language_query))?>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
             </div>
 
             <div class="row">

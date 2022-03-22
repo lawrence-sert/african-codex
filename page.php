@@ -92,6 +92,23 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 
 </head>
 <body>
+  <?php 
+
+
+$page_id = $rspge['page_id'];
+$page_date = $rspge['page_date'];
+$pagedate = strtotime( $page_date );
+$p_date = date( 'Y-m-d H:i:s', $pagedate );
+$page_type = $rspge['page_type'];
+$page_name = $rspge['page_name'];
+$page_short_description = $rspge['page_short_description'];
+$page_description = $rspge['page_description'];
+$language_id = $rspge['language_id'];
+$page_code = $rspge['page_code'];
+$user_code = $rspge['user_code'];
+
+
+  ?>
     <div class="d-flex" id="wrapper">
         <!-- Sidebar-->
         <?php require_once'include/elements/sidebar.php';?>
@@ -110,28 +127,113 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
               <!-- drafted contents starts here  -->
               <div class="col-md-8 col-sm-12">
 
-                <div class="scrollStyle">
-                <h1 class="g-font-size-24--md g-color--primary"><?php echo $rspge['page_name']; ?></h1>
+                <div class="row">
+                  <div class="col-7">
+                    <h1 class="g-font-size-20--md g-color--primary"><?php echo $page_name; ?></h1>
+                  </div>
 
-                <?php echo $rspge['page_description']; ?>
+                  <div class="col-5">
+                    <div class="row">
+                      <div class="col-4">
+                        <div class="d-grid gap-2">
+                          <button class="btn btn-outline-secondary" type="button">
+                            <span class="g-font-size-14--md">
+                              <i class="g-padding-r-5--xs ti-notepad"></i> Add
+                            </span>
+                          </button>
+                        </div>
+                      </div>
 
-                
+                      <div class="col-4">
+                        <div class="d-grid gap-2">
+                          <button class="btn btn-outline-secondary" type="button">
+                            <span class="g-font-size-14--md">
+                              <i class="g-padding-r-5--xs ti-notepad"></i> Files
+                            </span>
+                          </button>
+                        </div>
+                      </div>
 
-                <div class="row mt-4">
-              <div class="col-12">
-                <h4 class="g-font-size-16--md g-color--primary">Code Snippets</h4>
-
-                <div class="card text-dark bg-light mb-3" style="max-width: 100%;">
-                  <div class="card-body">
-                    <?php 
-                    $cod_id = 1;
-                    pageCode($page,$cod_id);
-                    ?>
+                      <div class="col-4">
+                        <div class="d-grid gap-2">
+                          <button class="btn btn-outline-secondary" type="button">
+                            <span class="g-font-size-14--md">
+                              <i class="g-padding-r-5--xs ti-notepad"></i> Clone
+                            </span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
+                
+                <div class="scrollStyle mt-5">
+                  <div class="row">
+                    <div class="col-9 g-font-size-14--md">
+                      <?php echo $rspge['page_description']; ?>
+                      Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia,
+                      molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum
+                      numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium
+                      optio, eaque rerum! Provident similique accusantium nemo autem. Veritatis
+                      obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam
+                      nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit,
+                      tenetur error, harum nesciunt ipsum debitis quas aliquid. Reprehenderit,
+                      quia. Quo neque error repudiandae fuga? Ipsa laudantium molestias eos 
+                      sapiente officiis modi at sunt excepturi expedita sint? Sed quibusdam
+                      recusandae alias error harum maxime adipisci amet laborum. Perspiciatis 
+                      minima nesciunt dolorem! Officiis iure rerum voluptates a cumque velit 
+
+                    </div>
+
+
+                    <div class="col-3">
+                      <h6 class="g-font-size-14--md">
+                        About
+                        <span>
+                          <a href="#" data-bs-toggle="modal" data-bs-target="#editPageModal">
+                            <i class="g-padding-r-10--xs float-end g-font-size-14--md ti-settings"></i> 
+                          </a>
+                          
+                        </span>
+                      </h6>
+
+                      <div class="row">
+                        <div class="col-12">
+
+                          <span class="g-font-size-12--md g-padding-r-5--xs">
+                            <i class="g-padding-r-10--xs ti-calendar"> </i> 
+                            <?php echo get_time_ago(strtotime($p_date)); ?> 
+                          </span>
+                          <br>
+
+                          <span class="g-font-size-12--md g-padding-r-5--xs">
+                            <i class="g-padding-r-10--xs ti-calendar"> </i> 
+                            <?php pageType($page_type); ?>
+                          </span>
+                          <br>
+
+                          <span class="g-font-size-12--md g-padding-r-5--xs">
+                            <i class="g-padding-r-10--xs ti-calendar"> </i> 
+                            <?php echo languageName($language_id); ?>
+                          </span>
+                          <br>
+
+                          <span class="g-font-size-12--md g-padding-r-5--xs">
+                            <i class="g-padding-r-10--xs ti-star"> </i> 
+                            0 stars
+                          </span>
+                          <br>
+                          <hr>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+                
                 </div>
               </div>
               <!-- drafted contents ends here  -->
@@ -247,6 +349,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 <?php require_once'include/snippets/note_modal.php'; ?>
 <?php require_once'include/snippets/resource_modal.php'; ?>
 <?php require_once'include/snippets/code_modal.php'; ?>
+<?php require_once'include/snippets/edit_page_modal.php'; ?>
 
 
 

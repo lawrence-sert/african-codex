@@ -83,9 +83,12 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 <body>
   <div class="d-flex" id="wrapper">
 
+    <!-- Sidebar-->
+    <?php require_once'include/elements/sidebar.php';?>
+    <!-- Page content wrapper-->
     <div id="page-content-wrapper">
-
-
+      <!-- Top navigation-->
+      <?php require_once'include/elements/navbar.php'; ?>
 
       <!-- Page content starts here -->
       <div class="container-fluid">
@@ -95,7 +98,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
           <div class="col-md-12 script-font">
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item code-font text-muted"><a href="index.php">Dashboard</a></li>
+                <li class="breadcrumb-item code-font text-muted"><a href="dashboard.php">Dashboard</a></li>
                 <li class="breadcrumb-item code-font active" aria-current="page">Template</li>
               </ol>
             </nav>

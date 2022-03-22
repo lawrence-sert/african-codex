@@ -72,7 +72,7 @@
 	</div>
 
 	<div class="list-group list-group-flush">
-		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="index.php">
+		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="dashboard.php">
 			<i class="g-padding-r-5--xs ti-desktop g-font-size-16--md"></i> Dashboard
 		</a>
 		<a class="list-group-item list-group-item-action list-group-item-light p-3" href="pages.php">

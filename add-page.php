@@ -15,6 +15,7 @@ if ($_POST['doInsert']=='Create')
 	$page_name            		=       mysqli_real_escape_string($con, $_POST['page_name']);
 	$page_short_description     =       mysqli_real_escape_string($con, $_POST['page_short_description']);
 	$page_description     		=       mysqli_real_escape_string($con, $_POST['page_description']);
+    $language                   =       mysqli_real_escape_string($con, $_POST['language']);
 
 	$page_code = generateRandomString();
 
@@ -28,6 +29,7 @@ if ($_POST['doInsert']=='Create')
             ,sprintf('page_name="%s"', $page_name)
             ,sprintf('page_short_description="%s"', $page_short_description)
             ,sprintf('page_description="%s"', $page_description)
+            ,sprintf('language_id="%s"', $language)
             ,sprintf('page_code="%s"', $page_code)
             ,sprintf('user_code="%s"', $user_code)
         );

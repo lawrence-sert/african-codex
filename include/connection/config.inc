@@ -35,6 +35,11 @@ $resources_query = mysqli_query($con, $resources) or die (mysqli_error());
 $rsresources = mysqli_fetch_assoc($resources_query);
 $numresources= mysqli_num_rows($resources_query);
 
+$language = "SELECT * FROM language ORDER BY language_name ASC ";
+$language_query = mysqli_query($con, $language) or die (mysqli_error());
+$rslanguage = mysqli_fetch_assoc($language_query);
+$numlanguage = mysqli_num_rows($language_query);
+
 $cntry = "SELECT * FROM country ORDER BY nicename ASC ";
 $cntry_query = mysqli_query($con, $cntry) or die (mysqli_error());
 $rscntry = mysqli_fetch_assoc($cntry_query);

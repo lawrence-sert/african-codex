@@ -5,7 +5,7 @@
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
                 <li class="nav-item active">
-                    <a class="nav-link" href="chat-room.php" target="_blank">
+                    <a class="nav-link" href="chat-room.php">
                        <i class="g-padding-r-5--xs ti-comments"></i> Chat Room
                    </a>
                 </li>

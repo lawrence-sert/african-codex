@@ -111,6 +111,15 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 
             <hr>
 
+            <?php 
+
+              if(empty($nummypages)) {
+                echo "No new Pages Yet";
+              }
+              else {
+                // show pages here 
+            ?>
+
             <ul class="list-group list-group-flush">
               <?php do { ?>
               <?php 
@@ -121,6 +130,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                 $p_date = date( 'Y-m-d H:i:s', $pagedate );
                 $page_short_description = $rsmypages['page_short_description'];
                 $page_type = $rsmypages['page_type'];
+                $language = $rsmypages['language_id'];
               ?>
               <li class="list-group-item pagesList">
                 <div class="row">
@@ -137,20 +147,25 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                       ?>
                       </small></p>
                     <span>
-                        <span class="g-font-size-12--md"><?php pageType($page_type); ?></span>
-
-                        <span class="g-font-size-12--md">
-                          <i class="g-padding-r-2--xs ti-star"> </i> 
-                          <i class="g-padding-r-2--xs ti-star"> </i> 
-                          <i class="g-padding-r-2--xs ti-star"> </i> 
-                          <i class="g-padding-r-2--xs ti-star"> </i> 
-                        </span>
-
-                        <span class="g-font-size-12--md">
+                      <span class="g-font-size-14--md g-padding-r-5--xs">
                           <i class="g-padding-r-2--xs ti-calendar"> </i> 
                           <?php echo get_time_ago(strtotime($p_date)); ?>
                         </span>
 
+                        <span class="g-font-size-14--md g-padding-r-5--xs"><?php pageType($page_type); ?></span>
+
+                        <span class="g-font-size-14--md g-padding-r-5--xs">
+                          <i class="g-padding-r-2--xs ti-star"> </i> 
+                          <i class="g-padding-r-2--xs ti-star"> </i> 
+                          <i class="g-padding-r-2--xs ti-star"> </i> 
+                          <i class="g-padding-r-2--xs ti-star"> </i> 
+                        </span>
+
+                        <span class="g-font-size-14--md g-padding-r-5--xs">
+                          <a href="language.php?language_id=<?php echo $language;?>">
+                            <span class="badge rounded-pill bg-success"><?php echo languageName($language);?></span>
+                          </a>
+                        </span>
                     </span>
                   </div>
                   <div class="col-4">
@@ -171,6 +186,8 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
             <?php } while($rsmypages = mysqli_fetch_assoc($mypages_query))?>
 
             </ul>
+
+          <?php } ?>
             
           </div>
           <!-- drafted contents ends here  -->
