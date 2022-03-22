@@ -10,7 +10,7 @@
                    </a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" href="#!" target="_blank">
+                    <a class="nav-link" href="git-hub.php">
                        <i class="g-padding-r-5--xs ti-github"></i> Github
                    </a>
                 </li>

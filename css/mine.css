@@ -1,4 +1,7 @@
 /*login page styling*/
+.header-link {
+  padding-top : 15px;
+}
 
 .reg-title-note {
   font-family: 'Fira Code', monospace;
@@ -90,3 +93,49 @@ a:hover, a:focus {
   padding : 10px;
 }
 
+.form-point {
+  border-bottom : 1px solid #ccc;
+}
+
+.s-form-v1__input {
+  color: #ccc;
+  font-size: 0.875rem;
+  font-weight: 300;
+  border-bottom: 1px solid #ccc;
+  border-right: none;
+  box-shadow: none;
+  letter-spacing: .1rem;
+  padding: 10px 5px;
+}
+
+.s-form-v1__input::-webkit-input-placeholder {
+  color: #ccc;
+}
+
+.s-form-v1__input::-moz-placeholder {
+  color: #ccc;
+}
+
+.s-form-v1__input:-ms-input-placeholder {
+  color: #fff;
+}
+
+.s-form-v1__input::placeholder {
+  color: #ccc;
+}
+
+.s-form-v1__input:focus {
+  height: 3.375rem;
+  color: #ccc;
+  font-size: 0.875rem;
+  font-weight: 300;
+  border-bottom: 1px solid #ccc;
+  border-right: none;
+  box-shadow: none;
+  letter-spacing: .1rem;
+  padding: 10px 5px;
+}
+
+.form-label {
+  font-size: 12px;
+}

@@ -18,7 +18,15 @@ else {
   $user = "SELECT * FROM users WHERE id='$usrId'";
   $user_query = mysqli_query($con, $user) or die (mysqli_error());
   $rsuser = mysqli_fetch_assoc($user_query);
+  $usr_code = usrCode($usrId);
 }
+
+
+//get all user resource search by user code
+$mypages = "SELECT * FROM page WHERE user_code='$usr_code' ORDER BY page_id DESC ";
+$mypages_query = mysqli_query($con, $mypages) or die (mysqli_error());
+$rsmypages = mysqli_fetch_assoc($mypages_query);
+$nummypages = mysqli_num_rows($mypages_query);
 
 //get all projects for display
 $meta = "SELECT * FROM meta WHERE title='$page'";
@@ -70,7 +78,6 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
   <link href="css/mine.css" rel="stylesheet" type="text/css"/>
   <!-- icon fonts style starts here  -->
   <link href="assets/themify/themify.css" rel="stylesheet" type="text/css"/>
-  <script src="https://kit.fontawesome.com/e77271821d.js" crossorigin="anonymous"></script>
   <!-- prism theme starts here  -->
   <link href="css/prism.css" rel="stylesheet" />
 
@@ -100,17 +107,20 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 
           <!-- drafted contents starts here  -->
           <div class="col-md-8 col-sm-12">
-            <h1 class="g-font-size-24--md g-color--primary">My Pages </h1>
+            <h1 class="g-font-size-24--md g-color--primary">My Pages (<?php echo $nummypages; ?>)</h1>
 
             <hr>
 
             <ul class="list-group list-group-flush">
               <?php do { ?>
               <?php 
-                $page_code = $rspages['page_code'];
-                $page_name = $rspages['page_name'];
-                $page_short_description = $rspages['page_short_description'];
-                $page_type = $rspages['page_type'];
+                $page_code = $rsmypages['page_code'];
+                $page_name = $rsmypages['page_name'];
+                $page_date = $rsmypages['page_date'];
+                $pagedate = strtotime( $page_date );
+                $p_date = date( 'Y-m-d H:i:s', $pagedate );
+                $page_short_description = $rsmypages['page_short_description'];
+                $page_type = $rsmypages['page_type'];
               ?>
               <li class="list-group-item pagesList">
                 <div class="row">
@@ -130,16 +140,15 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                         <span class="g-font-size-12--md"><?php pageType($page_type); ?></span>
 
                         <span class="g-font-size-12--md">
-                          <i class="g-padding-r-2--xs ti-star"> </i> <?php pageType($page_type); ?>
+                          <i class="g-padding-r-2--xs ti-star"> </i> 
+                          <i class="g-padding-r-2--xs ti-star"> </i> 
+                          <i class="g-padding-r-2--xs ti-star"> </i> 
+                          <i class="g-padding-r-2--xs ti-star"> </i> 
                         </span>
 
                         <span class="g-font-size-12--md">
                           <i class="g-padding-r-2--xs ti-calendar"> </i> 
-                          <?php
-                          if(!empty($strTimeAgo)) {
-                            echo "Result: " . $strTimeAgo;
-                          }
-                          ?>
+                          <?php echo get_time_ago(strtotime($p_date)); ?>
                         </span>
 
                     </span>
@@ -147,10 +156,10 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                   <div class="col-4">
                     <div class="row g-font-size-13--md">
                       <div class="col-4">
-                         <i class="g-padding-r-2--xs ti-write"></i> (32)
+                         <i class="g-padding-r-2--xs ti-notepad"></i> (32)
                       </div>
                       <div class="col-4">
-                        <i class="g-padding-r-2--xs ti-packages"></i> (23)
+                        <i class="g-padding-r-2--xs ti-archive"></i> (23)
                       </div>
                       <div class="col-4">
                        <i class="g-padding-r-2--xs ti-write"></i> (32)
@@ -159,7 +168,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                   </div>
                 </div>
               </li>
-            <?php } while($rspages = mysqli_fetch_assoc($pages_query))?>
+            <?php } while($rsmypages = mysqli_fetch_assoc($mypages_query))?>
 
             </ul>
             
@@ -176,19 +185,6 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
               </div>
             </div>
 
-            <div class="card mb-4">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              </div>
-            </div>
-
-            <div class="card mb-4">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
-                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-              </div>
-            </div>
 
           </div>
           <!-- side note ends here -->

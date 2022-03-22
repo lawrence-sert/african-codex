@@ -83,9 +83,12 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 <body>
   <div class="d-flex" id="wrapper">
 
+    <!-- Sidebar-->
+    <?php require_once'include/elements/sidebar.php';?>
+    <!-- Page content wrapper-->
     <div id="page-content-wrapper">
-
-
+      <!-- Top navigation-->
+      <?php require_once'include/elements/navbar.php';?>
 
       <!-- Page content starts here -->
       <div class="container-fluid">
@@ -96,7 +99,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item code-font text-muted"><a href="index.php">Dashboard</a></li>
-                <li class="breadcrumb-item code-font active" aria-current="page">Template</li>
+                <li class="breadcrumb-item code-font active" aria-current="page">GitHub Repos</li>
               </ol>
             </nav>
           </div>
@@ -105,7 +108,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
         <!-- page title start here -->
         <div class="row">
           <div class="col-md-8 col-sm-12">
-            <h1 class="g-font-size-24--md g-color--primary">Template</h1>
+            <h1 class="g-font-size-24--md g-color--primary">GitHub Repos</h1>
           </div>
           <div class="col-md-4 col-sm-12">
         </div>
@@ -115,7 +118,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 
           <!-- drafted contents starts here  -->
           <div class="col-md-8 col-sm-12">
-
+            <?php require_once'include/snippets/githupAPi.php'; ?>
           </div>
           <!-- drafted contents ends here  -->
 

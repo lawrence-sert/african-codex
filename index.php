@@ -18,6 +18,7 @@ else {
   $user = "SELECT * FROM users WHERE id='$usrId'";
   $user_query = mysqli_query($con, $user) or die (mysqli_error());
   $rsuser = mysqli_fetch_assoc($user_query);
+  $usr_code = usrCode($usrId);
 }
 
 //get all projects for display

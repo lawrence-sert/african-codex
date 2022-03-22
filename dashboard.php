@@ -18,9 +18,8 @@ else {
   $user = "SELECT * FROM users WHERE id='$usrId'";
   $user_query = mysqli_query($con, $user) or die (mysqli_error());
   $rsuser = mysqli_fetch_assoc($user_query);
+  $usr_code = usrCode($usrId);
 }
-
-
 //get all projects for display
 $meta = "SELECT * FROM meta WHERE title='$page'";
 $meta_query = mysqli_query($con, $meta) or die (mysqli_error());
@@ -112,14 +111,21 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
           <div class="col-md-8 col-sm-12">
             <h1 class="g-font-size-24--md g-color--primary">Dashboard</h1>
           </div>
+
           <div class="col-md-4 col-sm-12">
-        </div>
+            <?php 
+              //check if user has verified account
+              $accVerified = $rsuser['verified'];
+              accountStatus($accVerified);
+            ?>
+          </div>
 
 
         <div class="row mt-3">
-
           <!-- drafted contents starts here  -->
           <div class="col-md-8 col-sm-12">
+
+            <!-- create a banner -->
 
           </div>
           <!-- drafted contents ends here  -->

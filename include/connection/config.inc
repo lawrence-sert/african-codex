@@ -35,4 +35,8 @@ $resources_query = mysqli_query($con, $resources) or die (mysqli_error());
 $rsresources = mysqli_fetch_assoc($resources_query);
 $numresources= mysqli_num_rows($resources_query);
 
+$cntry = "SELECT * FROM country ORDER BY nicename ASC ";
+$cntry_query = mysqli_query($con, $cntry) or die (mysqli_error());
+$rscntry = mysqli_fetch_assoc($cntry_query);
+$numcntry = mysqli_num_rows($cntry_query);
 

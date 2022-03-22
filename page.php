@@ -18,6 +18,7 @@ else {
   $user = "SELECT * FROM users WHERE id='$usrId'";
   $user_query = mysqli_query($con, $user) or die (mysqli_error());
   $rsuser = mysqli_fetch_assoc($user_query);
+  $usr_code = usrCode($usrId);
 }
 
 $page_code =  $_GET['page_code'];
@@ -144,17 +145,20 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                         <ul class="nav nav-tabs nav-justified mt-4" id="myTab" role="tablist">
                           <li class="nav-item" role="presentation">
                             <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">
-                             <i class="g-padding-r-5--xs ti-write"></i> Notes
+                              <i class="g-padding-r-5--xs g-font-size-14--md ti-notepad"></i> 
+                              <span class="g-font-size-14--md code-font">Notes </span> 
                          </button>
                      </li>
                      <li class="nav-item" role="presentation">
                         <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">
-                           <i class="g-padding-r-5--xs ti-archive"></i> Rss & Links
+                           <i class="g-padding-r-5--xs g-font-size-14--md ti-archive"></i> 
+                           <span class="g-font-size-14--md code-font">Resources </span> 
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
                         <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">
-                            <i class="fa fa-address-book" aria-hidden="true"></i>Code
+                            <i class="g-padding-r-5--xs g-font-size-14--md ti-shortcode"></i> 
+                             <span class="g-font-size-14--md code-font">Code </span> 
                         </button>
                     </li>
                 </ul>
@@ -168,9 +172,6 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                           <div class="">
                             <!-- query all relavant notes for this page -->
                             <?php pageNotes($page_code);?>
-                            
-                              <?php echo get_time_ago(strtotime("2020-12-16 12:50:00")); ?>
-
                             </div>
                         </div>
 

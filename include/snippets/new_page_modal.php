@@ -3,6 +3,9 @@
     <div class="modal-content">
 
         <form action="add-page.php" method="POST" name="doInsert" id="doInsert">
+
+          <input type="hidden" class="form-control" name="user_code" value="<?php echo $usr_code;?>">
+
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">Create New Page </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>

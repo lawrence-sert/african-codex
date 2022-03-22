@@ -1,7 +1,7 @@
 <?php
 // Initialize the session
 session_start();
-$page = 'change me';
+$page = 'changeme';
 require_once "include/connection/config.inc";
 require_once "include/connection/functions.php";
 // Check if the user is logged in, if not then redirect him to login page
@@ -83,7 +83,12 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 <body>
   <div class="d-flex" id="wrapper">
 
+    <!-- Sidebar-->
+    <?php require_once'include/elements/sidebar.php';?>
+    <!-- Page content wrapper-->
     <div id="page-content-wrapper">
+      <!-- Top navigation-->
+      <?php require_once'include/elements/navbar.php';?>
 
 
 
@@ -95,8 +100,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
           <div class="col-md-12 script-font">
             <nav style="--bs-breadcrumb-divider: '>';" aria-label="breadcrumb">
               <ol class="breadcrumb">
-                <li class="breadcrumb-item code-font text-muted"><a href="index.php">Dashboard</a></li>
-                <li class="breadcrumb-item code-font active" aria-current="page">Template</li>
+                <li class="breadcrumb-item code-font text-muted"><a href="get-started.php">Getting Started</a></li>
               </ol>
             </nav>
           </div>
@@ -105,7 +109,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
         <!-- page title start here -->
         <div class="row">
           <div class="col-md-8 col-sm-12">
-            <h1 class="g-font-size-24--md g-color--primary">Template</h1>
+            <h1 class="g-font-size-24--md g-color--primary g-margin-b-30--xs">Welcome To Africancodex. Lets Get You Started</h1>
           </div>
           <div class="col-md-4 col-sm-12">
         </div>
@@ -115,7 +119,66 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
 
           <!-- drafted contents starts here  -->
           <div class="col-md-8 col-sm-12">
+            <h4 class="mb-4 g-font-size-18--md">First, Who do you want to be on Africancodex?</h4>
 
+            <form action="">
+
+              <div class="row">
+                <div class="col-8">
+                  <div class="mb-3">
+                    <label for="formFileSm" class="form-label ">Profile Picture</label>
+                    <input class="form-control form-control-sm" name="image" id="formFileSm" type="file">
+                  </div>
+                </div>
+                <div class="col-4"></div>
+              </div>
+
+              <div class="row ">
+                <div class="col-6">
+                  <div class="mb-3">
+                    <select class="form-select" name="country" aria-label="Whats your country">
+                      <option selected>Select Country</option>
+                      <?php do { ?>
+                      <option value="<?php echo $rscntry['id']; ?>"><?php echo $rscntry['nicename']; ?></option>
+                    <?php } while($rscntry = mysqli_fetch_assoc($cntry_query))?>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="mb-3">
+                    <input type="text" class="form-control" name="phone" placeholder="Phone Number">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-3">
+                    <input type="text" class="form-control" name="description" placeholder="Short Bio / Description ">
+                  </div>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-12">
+                  <div class="mb-3">
+                    <label for="formFileSm" class="form-label">How Familiar Are You With Programming</label><br>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1">
+                      <label class="form-check-label" for="inlineRadio1">Beginner</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+                      <label class="form-check-label" for="inlineRadio2">Intermediate</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio3" value="option3">
+                      <label class="form-check-label" for="inlineRadio3">Expert</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
           <!-- drafted contents ends here  -->
 

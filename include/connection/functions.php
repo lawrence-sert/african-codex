@@ -4,6 +4,23 @@ function truncate($string, $length, $dots = "...") {
     echo (strlen($string) > $length) ? substr($string, 0, $length - strlen($dots)) . $dots : $string;
 }
 
+
+function accountStatus($accVerified) {
+	if($accVerified==0) {
+		echo "<div class='alert alert-danger' role='alert'>";
+			echo "<small>";
+              echo "Please verify your account.";
+              echo "<a href='#'>";
+              	echo "Resend verification link";
+              echo "</a>";
+            echo "</small>";
+        echo "</div>";
+	}
+	else {	
+	}
+
+}
+
 function pageType($page_type) {
 	switch ($page_type) {
 		case "1":
@@ -43,6 +60,28 @@ function rssLanguage($rss_language) {
 }
 
 
+function usrCode($usrId) {
+
+	$con = mysqli_connect("localhost","root","","learncodex");
+	if (mysqli_connect_errno()) {
+	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	  exit();
+	}
+
+
+	$usrCode = "SELECT user_code FROM users WHERE id='$usrId' ";
+	$rsusrCode  = mysqli_query($con, $usrCode);
+
+	while($rwusrCode = mysqli_fetch_array($rsusrCode))
+	{
+
+		$user_code = $rwusrCode['user_code'];
+
+		return $user_code;
+	}
+
+}
+
 function pageResource($page) {
 
 	$con = mysqli_connect("localhost","root","","learncodex");
@@ -71,6 +110,8 @@ function pageResource($page) {
 	}
 
 }
+
+
 
 function pageNotes($page_code) {
 
@@ -160,6 +201,22 @@ function countryName($countryID) {
 
 }
 
+function countryPhonecode($countryID) {
+	$con = mysqli_connect("localhost","root","","learncodex");
+	if (mysqli_connect_errno()) {
+	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	  exit();
+	}
+	$cntryPhone = "SELECT phonecode FROM country WHERE id='$countryID'";
+	$rscntryPhone = mysqli_query($con, $cntryPhone);
+	while($rwcntryPhone = mysqli_fetch_array($rscntryPhone))
+	{
+		$phonecode = $rwcntryPhone['phonecode'];
+		echo $phonecode;
+	}
+
+}
+
 
 //time ago 
 function get_time_ago($time){
@@ -185,7 +242,7 @@ function get_time_ago($time){
 
   //generate random string
     function generateRandomString($length = 10) {
-        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $characters = '0$usr_code789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
         for ($i = 0; $i < $length; $i++) {
@@ -195,61 +252,61 @@ function get_time_ago($time){
     }
     
 
-  function userPageCount($usrId) {
+  function userPageCount($usr_code) {
   	$con = mysqli_connect("localhost","root","","learncodex");
 	if (mysqli_connect_errno()) {
 	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	  exit();
 	}
-	$usrPages = "SELECT * FROM page WHERE user_code='123456'";
+	$usrPages = "SELECT * FROM page WHERE user_code='$usr_code'";
 	$rsusrPages = mysqli_query($con, $usrPages);
 	$numusrPages= mysqli_num_rows($rsusrPages);
 	echo $numusrPages;
   }
 
-  function userResourcesCount($usrId) {
+  function userResourcesCount($usr_code) {
   	$con = mysqli_connect("localhost","root","","learncodex");
 	if (mysqli_connect_errno()) {
 	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	  exit();
 	}
-	$usrResources = "SELECT * FROM resources WHERE user_code='123456'";
+	$usrResources = "SELECT * FROM resources WHERE user_code='$usr_code'";
 	$rsusrResources = mysqli_query($con, $usrResources);
 	$numusrResources= mysqli_num_rows($rsusrResources);
 	echo $numusrResources;
   }
 
-  function userNotesCount($usrId) {
+  function userNotesCount($usr_code) {
   	$con = mysqli_connect("localhost","root","","learncodex");
 	if (mysqli_connect_errno()) {
 	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	  exit();
 	}
-	$usrNotes = "SELECT * FROM notes WHERE user_code='123456'";
+	$usrNotes = "SELECT * FROM notes WHERE user_code='$usr_code'";
 	$rsusrNotes = mysqli_query($con, $usrNotes);
 	$numusrNotes= mysqli_num_rows($rsusrNotes);
 	echo $numusrNotes;
   }
 
-  function userToolsCount($usrId) {
+  function userToolsCount($usr_code) {
   	$con = mysqli_connect("localhost","root","","learncodex");
 	if (mysqli_connect_errno()) {
 	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	  exit();
 	}
-	$usrTools = "SELECT * FROM tools WHERE user_code='123456'";
+	$usrTools = "SELECT * FROM tools WHERE user_code='$usr_code'";
 	$rsusrTools = mysqli_query($con, $usrTools);
 	$numusrTools= mysqli_num_rows($rsusrTools);
 	echo $numusrTools;
   }
 
-  function userVideosCount($usrId) {
+  function userVideosCount($usr_code) {
   	$con = mysqli_connect("localhost","root","","learncodex");
 	if (mysqli_connect_errno()) {
 	  echo "Failed to connect to MySQL: " . mysqli_connect_error();
 	  exit();
 	}
-	$usrVideos = "SELECT * FROM videos WHERE user_code='123456'";
+	$usrVideos = "SELECT * FROM videos WHERE user_code='$usr_code'";
 	$rsusrVideos = mysqli_query($con, $usrVideos);
 	$numusrVideos= mysqli_num_rows($rsusrVideos);
 	echo $numusrVideos;

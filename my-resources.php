@@ -14,12 +14,20 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
 }
 else {
   $usrId = $_SESSION["id"];
-  //get all projects for display
+  //get all user information
   $user = "SELECT * FROM users WHERE id='$usrId'";
   $user_query = mysqli_query($con, $user) or die (mysqli_error());
   $rsuser = mysqli_fetch_assoc($user_query);
   $usr_code = usrCode($usrId);
 }
+
+//get user 
+
+//get all user resource search by user code
+$myresources = "SELECT * FROM resources WHERE user_code='123456' ORDER BY rss_id DESC ";
+$myresources_query = mysqli_query($con, $myresources) or die (mysqli_error());
+$rsmyresources = mysqli_fetch_assoc($myresources_query);
+$nummyresources = mysqli_num_rows($myresources_query);
 
 //get all projects for display
 $meta = "SELECT * FROM meta WHERE title='$page'";
@@ -111,7 +119,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
         <!-- page title start here -->
         <div class="row">
           <div class="col-md-8 col-sm-12">
-            <h1 class="g-font-size-24--md g-color--primary"> <i class="g-padding-r-5--xs ti-package g-font-size-20--md"></i> Resources <i class="fa-solid fa-angle-left"></i> 
+            <h1 class="g-font-size-24--md g-color--primary"> <i class="g-padding-r-5--xs ti-package g-font-size-20--md"></i> My Resources (<?php echo $nummyresources; ?>) <i class="fa-solid fa-angle-left"></i> 
             </h1>
           </div>
           <div class="col-md-4 col-sm-12">
@@ -206,7 +214,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
                    </div>
                  </div>
                <?php } ?>
-               <?php } while($rsresources = mysqli_fetch_assoc($resources_query)) ?>
+               <?php } while($rsmyresources = mysqli_fetch_assoc($myresources_query)) ?>
              </div>
            </div>
          </div>

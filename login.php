@@ -35,7 +35,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     // Validate credentials
     if(empty($username_err) && empty($password_err)){
         // Prepare a select statement
-        $sql = "SELECT id, username, password FROM users WHERE username = ?";
+        $sql = "SELECT id, username, password, profile_complete FROM users WHERE username = ?";
         
         if($stmt = mysqli_prepare($con, $sql)){
             // Bind variables to the prepared statement as parameters
@@ -52,7 +52,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 // Check if username exists, if yes then verify password
                 if(mysqli_stmt_num_rows($stmt) == 1){                    
                     // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+                    mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password, $profile_complete);
                     if(mysqli_stmt_fetch($stmt)){
                         if(password_verify($password, $hashed_password)){
                             // Password is correct, so start a new session
@@ -63,8 +63,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                             $_SESSION["id"] = $id;
                             $_SESSION["username"] = $username;                            
                             
-                            // Redirect user to welcome page
-                            header("location: dashboard.php");
+                            if($profile_complete == 0) {
+                               // Redirect user to welcome page
+                                header("location: get-started.php"); 
+                            }                            
+                            else {
+                               // Redirect user to welcome page
+                                header("location: dashboard.php");  
+                            }
+                            
                         } else{
                             // Password is not valid, display a generic error message
                             $login_err = "Invalid username or password.";
@@ -157,7 +164,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         <div class="s-header-v2__navbar-col s-header-v2__navbar-col--right">
                             <!-- Collect the nav links, forms, and other content for toggling -->
                             <div class="collapse navbar-collapse s-header-v2__navbar-collapse" id="nav-collapse">
-                                <a href="login.php" class="header-link">I already have an account </a> |
+                                <a href="register.php" class="header-link">I dont have an account yet </a> |
                                 <a href="forgot-password.php" class="header-link">Forgot Password </a> 
                             </div>
                             <!-- End Nav Menu -->
@@ -196,7 +203,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                   <div class="row">
                                     <col-12>
                                         <div class="mb-3">
-                                          <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
+                                          <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?> s-form-v2__input" value="<?php echo $username; ?>" placeholder="Enter Username">
                                           <span class="invalid-feedback"><?php echo $username_err; ?></span>
                                       </div>
                                     </col-12>

@@ -1,11 +1,18 @@
 <?php
+// Import PHPMailer classes into the global namespace
+// These must be at the top of your script, not inside a function
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+//Load Composer's autoloader
+require 'vendor/autoload.php';
 // Include config file
 require_once "include/connection/config.inc";
 require_once "include/connection/functions.php";
  
 // Define variables and initialize with empty values
-$username = $password = $confirm_password = "";
-$username_err = $password_err = $confirm_password_err = "";
+$username = $email = $password = $confirm_password = "";
+$username_err = $email_err = $password_err = $confirm_password_err = "";
  
 // Processing form data when form is submitted
 if($_SERVER["REQUEST_METHOD"] == "POST"){
@@ -44,6 +51,42 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             mysqli_stmt_close($stmt);
         }
     }
+
+
+    // Validate email
+    if(empty(trim($_POST["email"]))){
+        $email_err = "Please enter an email address.";
+    } elseif(!filter_var(trim($_POST["email"]), FILTER_VALIDATE_EMAIL)){
+        $email_err = "Email Address is not valid";
+    } else{
+        // Prepare a select statement
+        $sql = "SELECT email FROM users WHERE email = ?";
+        
+        if($stmt = mysqli_prepare($con, $sql)){
+            // Bind variables to the prepared statement as parameters
+            mysqli_stmt_bind_param($stmt, "s", $param_email);
+            
+            // Set parameters
+            $param_email = trim($_POST["email"]);
+            
+            // Attempt to execute the prepared statement
+            if(mysqli_stmt_execute($stmt)){
+                /* store result */
+                mysqli_stmt_store_result($stmt);
+                
+                if(mysqli_stmt_num_rows($stmt) == 1){
+                    $email_err = "This email address is already taken.";
+                } else{
+                    $email = trim($_POST["email"]);
+                }
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+
+            // Close statement
+            mysqli_stmt_close($stmt);
+        }
+    }
     
     // Validate password
     if(empty(trim($_POST["password"]))){
@@ -65,21 +108,61 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
     
     // Check input errors before inserting in database
-    if(empty($username_err) && empty($password_err) && empty($confirm_password_err)){
+    if(empty($username_err) && empty($email_err) && empty($password_err) && empty($confirm_password_err)){
+
+        //create random user code
+        $usr_code = generateRandomString($length = 10); 
+        $link = "<a href='https://africancode.rw/email-verification/verify-email.php?key=".$_POST['email']."&user_code=".$usr_code."'>Click and Verify Email</a>";
         
         // Prepare an insert statement
-        $sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+        $sql = "INSERT INTO users (username, password, email, user_code, email_verification_link) VALUES (?, ?, ?, ?, ?)";
          
         if($stmt = mysqli_prepare($con, $sql)){
             // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "ss", $param_username, $param_password);
+            mysqli_stmt_bind_param($stmt, "sssss", $param_username, $param_password, $param_email, $param_code, $param_usr_code);
             
             // Set parameters
             $param_username = $username;
             $param_password = password_hash($password, PASSWORD_DEFAULT); // Creates a password hash
+            $param_email = $email;
+            $param_code = $usr_code;
+            $param_usr_code = $usr_code;
             
             // Attempt to execute the prepared statement
             if(mysqli_stmt_execute($stmt)){
+
+                //lets send the email 
+                require_once('PHPMailer/PHPMailerAutoload.php');
+                $mail = new PHPMailer();
+                $mail->CharSet =  "utf-8";
+                $mail->IsSMTP();
+// enable SMTP authentication
+                $mail->SMTPAuth = true;                  
+// GMAIL username
+                $mail->Username = "lawrencegumbo@gmail.com";
+// GMAIL password
+                $mail->Password = "lAwrencegUmbo08#";
+                $mail->SMTPSecure = "ssl";  
+// sets GMAIL as the SMTP server
+                $mail->Host = "smtp.gmail.com";
+// set the SMTP port for the GMAIL server
+                $mail->Port = "465";
+                $mail->From='hello@africancode.rw';
+                $mail->FromName='Lawrence Gumbo';
+                $mail->AddAddress($email, $username);
+                $mail->Subject  =  'New Account Created';
+                $mail->IsHTML(true);
+                $mail->Body    = 'Click On This Link to Verify Email '.$link.'';
+                if($mail->Send())
+                {
+                    echo "Check Your Email box and Click on the email verification link.";
+                }
+                else
+                {
+                    echo "Mail Error - >".$mail->ErrorInfo;
+                }
+
+
                 // Redirect to login page
                 header("location: login.php");
             } else{
@@ -198,8 +281,16 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                                     <div class="row">
                                     <col-12>
                                         <div class="mb-3">
-                                          <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
+                                          <input type="text" name="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" placeholder="username" value="<?php echo $username; ?>">
                                           <span class="invalid-feedback"><?php echo $username_err; ?></span>
+                                      </div>
+                                    </col-12>
+                                  </div>
+                                  <div class="row">
+                                    <col-12>
+                                        <div class="mb-3">
+                                          <input type="text" name="email" class="form-control <?php echo (!empty($email_err)) ? 'is-invalid' : ''; ?>" placeholder="Email Address" value="<?php echo $email; ?>">
+                                          <span class="invalid-feedback"><?php echo $email_err; ?></span>
                                       </div>
                                     </col-12>
                                   </div>
