@@ -36,6 +36,8 @@
                 </div>
               </div>
 
+              
+
               <div class="row">
                 <div class="col-md-6 col-sm-6 col-xs-6">
                   <button type="button" class="btn btn-block btn-primary" onclick="highlightWords()">Analyze Text</button>
@@ -47,14 +49,22 @@
 
               <div class="row mt-4">
                 <div class="col-md-12 col-sm-12 col-xs-12">
-                  <span id="demo"></span>
+                  <span id="demo">
+                  </span>
+
                 </div>
               </div>
 
-              <label for="myCheck">Hide All :</label> 
-              <input type="checkbox" id="myCheck" onclick="myFunction()">
 
-              <p id="text" style="display:none">Checkbox is CHECKED!</p>
+
+              <div class="row">
+                    <div class="col-md-12">
+                      <h5>Previous Sentences</h5>
+                      <span id="list"></span>
+                    </div>
+                  </div>
+              
+
 
             </div>
           </div>
@@ -65,21 +75,7 @@
     </div>
   </section>
 </body>
-
-<script>
-function myFunction() {
-  var checkBox = document.getElementById("myCheck");
-  var text = document.getElementById("text");
-  if (checkBox.checked == true){
-    text.style.display = "block";
-    console.log('hell');
-  } else {
-     text.style.display = "none";
-     console.log('hellow');
-  }
-}
-</script>
-<script type="text/javascript" src="js/word-widget.js"></script>
+<script src="js/word-widget.js"></script>
 </html>
 
 

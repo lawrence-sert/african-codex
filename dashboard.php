@@ -145,8 +145,7 @@ $rsmeta = mysqli_fetch_assoc($meta_query);
     </div>
   </div>
 <!-- Bootstrap core JS-->
-<script src="https://kit.fontawesome.com/e77271821d.js" crossorigin="anonymous"></script>
-<script src="js/checknet.js"></script>
+
 <script src="js/bootstrap.bundle.min.js"></script>
 <!-- Core theme JS-->
 <script src="js/scripts.js"></script>

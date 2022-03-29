@@ -164,7 +164,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         <div class="s-header-v2__navbar-col s-header-v2__navbar-col--right">
                             <!-- Collect the nav links, forms, and other content for toggling -->
                             <div class="collapse navbar-collapse s-header-v2__navbar-collapse" id="nav-collapse">
-                                <a href="register.php" class="header-link">I dont have an account yet </a> |
+                                <br>
+                                <a href="register.php" class="header-link pt-4">I dont have an account yet </a> |
                                 <a href="forgot-password.php" class="header-link">Forgot Password </a> 
                             </div>
                             <!-- End Nav Menu -->
@@ -189,10 +190,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                         
                         <div class="wow fadeInUp" data-wow-duration=".3" data-wow-delay=".1s">
                             <div class="s-plan-v1 g-bg-color--white g-padding-y-20--xs g-padding-x-10--xs">
-                                <span class="reg-title-note">Welcome To AfricanCodex</span><br>
-                                <span class="reg-title-note">Let's begin the adventure</span><br>
-                                <span class="reg-title-heading mt-4">Create Account</span><br>
-
+                                <div class="text-top g-text-center--xs mb-5">
+                                    <span class="reg-title-note">Welcome To AfricanCodex</span><br>
+                                    <span class="reg-title-note">Let's begin the adventure</span><br>
+                                    <span class="reg-title-heading mt-4 g-font-size-18--xs">Create Account</span><br>
+                                </div>
+                                
                                 <?php 
                                 if(!empty($login_err)){
                                     echo '<div class="alert alert-danger">' . $login_err . '</div>';
