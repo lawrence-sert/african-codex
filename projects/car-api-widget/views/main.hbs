@@ -1,0 +1,53 @@
+<h1 class="jumbotron-heading mb-4 text-center">Car Api Widget</h1>
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card" style="width: 100%;">
+            <div class="card-body">
+
+				<div class="row">
+                    <div class="col-md-8 col-sm-12">
+                      <h3>Car List</h3>
+
+                      <!-- Nav tabs -->
+                      <ul class="nav nav-tabs mt-4">
+                        <li class="nav-item">
+                          <a class="nav-link active" data-toggle="tab" href="#cars">Cars</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" data-toggle="tab" href="#color">Colors</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" data-toggle="tab" href="#brand">Brands</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" data-toggle="tab" href="#table">Table</a>
+                        </li>
+                      </ul>
+
+                      <!-- Tab panes -->
+                      <div class="tab-content">
+                        <div class="tab-pane container active mt-4" id="cars">
+                          {{> cars}}
+                        </div>
+                        <div class="tab-pane container fade mt-4" id="color">
+                          {{> colors}}
+                        </div>
+                        <div class="tab-pane container fade mt-4" id="brand">
+                          {{> brands}}
+                        </div>
+                        <div class="tab-pane container fade mt-4" id="table">
+                          {{> table}}
+                        </div>
+                      </div>
+
+                    </div>
+                    <div class="col-md-4 col-sm-12">
+                      <h3>Search</h3>
+                    </div>
+                  </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
